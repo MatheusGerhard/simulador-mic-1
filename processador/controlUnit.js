@@ -1,38 +1,41 @@
-// Control Unit / Unidade de Controle (ControlUnit)
+// Control Unit - Unidade de Controle (ControlUnit)
 
 // Descrição: O "cérebro" do processador. Decodifica instruções e coordena o fluxo de dados.
 // Recebe: O opcode vindo do IR e sinais de flags da ALU.
 // Envia: Sinais de controle (Enable, Read, Write, Select ALU Op) para todos os outros componentes.
 
-import memoria from 'memory.js';
-import registers from 'registers.js';
-
 class ControlUnit {
-    constructor() {
-        this.mpc = 0; // Ponteiro que diz qual passo (linha) executar agora
+    // O constructor recebe as peças (objetos) de hardware que vai controlar
+    constructor(mpc, memoria, pc, mar, mbr, ir) {
+        this.mpc = mpc;
+        this.memoria = memoria;
+        this.pc = pc;
+        this.mar = mar;
+        this.mbr = mbr;
+        this.ir = ir;
     }
 
-    // Executa um passo por vez (um pulso de clock)
+    // O ciclo se inicia
     rodaCiclo() {
-        switch (this.mpc) {
+        switch (this.mpc.read()) {
             case 0:
-                registers.mar = registers.pc;
-                registers.mbr = memoria.read(registers.mar);
-                this.mpc = 1; // Próximo passo é o 1
+                this.mar.write(this.pc.read());
+                this.mbr.write(this.memoria.read(this.mar.read()));
+                
+                // CORREÇÃO: Atualizamos o valor usando .write()
+                this.mpc.write(1); 
                 break;
 
             case 1:
-                registers.pc = registers.pc + 1;
-                registers.mbr = memoria.read(registers.mar);
-                this.mpc = 2; // Próximo passo é o 2
+                this.pc.increment();
+                this.mbr.write(this.memoria.read(this.mar.read()));
+                
+                this.mpc.write(2); 
                 break;
 
             case 2:
-                registers.ir = registers.mbr;
-                console.log("Instrução na mesa (IR):", registers.ir);
-                
-                // Aqui vai entrar a decodificação no próximo passo...
-                this.mpc = 0; // Por enquanto, volta ao início
+                this.ir.write(this.mbr.read());                
+                this.mpc.write(0); 
                 break;
         }
     }

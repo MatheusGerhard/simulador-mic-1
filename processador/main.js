@@ -1,26 +1,37 @@
 // main.js - O Inicializador do Sistema
-import memoria from './memory.js';
-import pc from './pc.js';
+
+// importações
+import Clock from './clock.js';
 import ControlUnit from './controlUnit.js';
-// (Outros registradores serão importados aqui depois)
+import InstructionRegister from './ir.js';
+import Memoria from './memory.js';
+import MemoryAddressRegister from './mar.js';
+import MemoryBufferRegister from './mbr.js';
+import MicroprogramCounter from './mpc.js';
+import PC from './pc.js';
 
 
-// 1. Instancia a Unidade de Controle (O MPC nasce em 0 lá dentro)
-const conuni = new ControlUnit();
+// Instanciando os objetos
+const relogio = new Clock();
+const ir = new InstructionRegister();
+const memoria = new Memoria();
+const mar = new MemoryAddressRegister();
+const mbr = new MemoryBufferRegister();
+const mpc = new MPC();
+const uc = new ControlUnit(mpc, memoria, pc, mar, mbr, ir);
+const pc = new PC(); 
 
-console.log("Processador ligado. Iniciando ciclo de clock...");
+const uc = new ControlUnit(mpc, memoria, pc, mar, mbr, ir);
 
-// 3. O Loop do Relógio (Clock)
+// O Loop do Relógio (Clock)
 let simulacaoAtiva = true;
 
 while (simulacaoAtiva) {
     // A cada repetição, é um pulso de clock que executa uma linha da sua tabela
-    ulaControle.rodaCiclo();
+    relogio.pulso(uc);
     
-    // Condição temporária para não travar o seu PC no teste inicial
+    // Finaliza o loop no final do programa
     if (pc.read() > 5) { 
         simulacaoAtiva = false; 
     }
 }
-
-console.log("Simulação finalizada.");
