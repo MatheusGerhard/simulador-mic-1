@@ -6,4 +6,10 @@
 
 class AC {
     // Implementação do registrador acumulador aqui
+    constructor() {
+        this.value = 0;
+    }
+
+    get() { return this.value; }
+    set(val) { this.value = val & 0xFFFF; } // Mantém 16 bits
 }

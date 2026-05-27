@@ -6,4 +6,10 @@
 
 class MDR {
     // Implementação do registro de dados aqui
+    constructor() {
+        this.value = 0;
+    }
+
+    get() { return this.value; }
+    set(val) { this.value = val & 0xFFFF; }
 }
