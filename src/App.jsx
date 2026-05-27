@@ -1,6 +1,6 @@
 import './App.css'
 import Memory from './components/memory'
-import memoria from '../processador/Memory'
+import memoria from '../processador/memory'
 import Montador from '../montador/montador'
 export default function App() {
 

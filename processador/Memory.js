@@ -1,3 +1,10 @@
+// Main Memory - Memória Principal
+
+// Descrição: Armazena o programa (instruções) e os dados que serão processados.
+// Recebe: os arrays do compilador e, em caso de escrita, um dado do MDR. 
+// Envia: O dado ou instrução presente no endereço solicitado para o MDR.
+
+
 class Memory {
     constructor(size = 4096) {
         this.data = new Array(size).fill("0000000000000000");

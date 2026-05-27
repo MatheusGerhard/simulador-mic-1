@@ -1,5 +1,5 @@
 import detecta_tipo_instrucao from "./macroinstrucoes.js";
-import memoria from "../processador/Memory.js";
+import memoria from "../processador/memory.js";
 
 class Montador{
     

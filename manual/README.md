@@ -118,3 +118,11 @@
 <p align="center">
   <img src="mic-1.jpeg" alt="Diagrama da arquitetura MIC-1" />
 </p>
+
+
+### Regras da Memória Principal
+
+Endereços: 
+  1 a 1000 - instruções
+  1001 a 2000 - dados
+  3001 a 4095 - pilha

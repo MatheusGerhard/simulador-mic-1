@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import memoria from "../../../processador/Memory";
+import memoria from "../../../processador/memory";
 import styles from './styles.module.css'
 
 export default function Memory() {
