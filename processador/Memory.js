@@ -1,9 +1,17 @@
-// Main Memory / Memória Principal
-
-// Descrição: Armazena o programa (instruções) e os dados que serão processados.
-// Recebe: Um endereço do MAR e, em caso de escrita, um dado do MDR. Também recebe o array do compilador.
-// Envia: O dado ou instrução presente no endereço solicitado para o MDR.
-
 class Memory {
-    // Métodos para carregar o array do compilador e para leitura/escrita
+    constructor(size = 4096) {
+        this.data = new Array(size).fill(0);
+    }
+
+    read(address) {
+        return this.data[address];
+    }
+
+    write(address, value) {
+        this.data[address] = value;
+    }
 }
+
+const memoria = new Memory();
+
+export default memoria;
