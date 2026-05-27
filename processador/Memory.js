@@ -1,6 +1,6 @@
 class Memory {
     constructor(size = 4096) {
-        this.data = new Array(size).fill(0);
+        this.data = new Array(size).fill("0000000000000000");
     }
 
     read(address) {
