@@ -1,8 +1,10 @@
 import detecta_tipo_instrucao from "./macroinstrucoes.js";
+import memoria from "../processador/Memory.js";
 
 class Montador{
     
     microinstrucoes = [];
+    macroinstrucoes = [];
     
 
     constructor(assemblyCode){
@@ -90,6 +92,7 @@ class Montador{
             linha_num++;
             
         }
+        this.macroinstrucoes = macroinstrucoes;
         return macroinstrucoes;
     }
 
@@ -137,26 +140,29 @@ class Montador{
         return true;
     }
 
+    preencherMemoria(){
+        memoria.preencheInstrucoes(this.microinstrucoes, this.macroinstrucoes);
+    }
+
     main(){
         //Realiza as tres operações do montador e preenche o atributo microinstrucoes com o código de máquina correspondente ao código assembly recebido no construtor
-        let macroinstrucoes = montador.tokeniza_codigo();
+        let macroinstrucoes = this.tokeniza_codigo();
         if(macroinstrucoes.error){
             console.error(macroinstrucoes.error);
             return null;
         }
 
-        montador.primeira_passagem(macroinstrucoes);
+        this.primeira_passagem(macroinstrucoes);
 
-        montador.segunda_passagem(macroinstrucoes);
+        this.segunda_passagem(macroinstrucoes);
+
+        
     }
 }
 
-let string = `LOCO 10;\nSTOD 100;\nLOCO 20;\nADDD 100;\nSTOD 101;
-`
 
-let montador = new Montador(string);
+let string = `LOCO 10;\nSTOD 100;\nLOCO 20;\nADDD 100;\nSTOD 101;`
 
 
-montador.main();
 
-console.log(montador.microinstrucoes);
+export default Montador;

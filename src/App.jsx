@@ -1,10 +1,22 @@
 import './App.css'
 import Memory from './components/memory'
 import memoria from '../processador/Memory'
+import Montador from '../montador/montador'
 export default function App() {
 
   function handleClick(){
-    memoria.write(4095, 1)
+    let string = document.getElementById("codigo").value;
+    
+
+    let montador = new Montador(string);
+  
+    
+    
+
+    montador.main();
+    montador.preencherMemoria();
+    console.log(montador.macroinstrucoes);
+    
   }
 
   return (
@@ -12,8 +24,10 @@ export default function App() {
       <div className='Titulo'>
         TRABALHO ARQ: SIMULADOR-MIC-1
       </div>
-      <Memory/>
+      <textarea type="text" id='codigo' placeholder='Digite o código aqui...'/>
       <button onClick={handleClick}>Botão</button>
+      <Memory/>
+      
     </>
   )
 }

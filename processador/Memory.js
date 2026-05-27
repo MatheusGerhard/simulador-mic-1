@@ -10,6 +10,14 @@ class Memory {
     write(address, value) {
         this.data[address] = value;
     }
+
+    preencheInstrucoes(microinstrucoes, macroinstrucoes) {
+        for (let i = 0; i < macroinstrucoes.length; i++) {
+            this.write(macroinstrucoes[i].rotulo_index, microinstrucoes[i]);
+            console.log(microinstrucoes);
+            console.log(microinstrucoes[i]);
+        }
+    }
 }
 
 const memoria = new Memory();

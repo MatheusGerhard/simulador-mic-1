@@ -259,8 +259,8 @@ function desp(linha) {
 function detecta_tipo_instrucao(linha){
     let instrucaobin = lodd(linha) || stod(linha) || addd(linha) || subd(linha) || jpos(linha) || jzer(linha) || jump(linha) || loco(linha) || lodl(linha) || stol(linha) || addl(linha) || subl(linha) || jneg(linha) || jnze(linha) || call(linha) || pshi(linha) || popi(linha) || push(linha) || pop(linha) || retn(linha) || swap(linha) || insp(linha) || desp(linha);
     if(instrucaobin === null){
-        console.error("Instrução desconhecida: " + linha.opcode);
-        return null;
+        console.log("Label")
+        return "0000000000000000";
     }
     return instrucaobin;
 }
