@@ -1,4 +1,4 @@
-// Program Counter / Contador de Programa (PC)
+// Program Counter - Contador de Programa (PC)
 
 // Descrição: Armazena o endereço de memória da próxima instrução a ser buscada e executada.
 // Recebe: Sinal de incremento (+1) ou um novo endereço (proveniente de instruções de desvio/jump).
@@ -15,12 +15,16 @@ class ProgramCounter {
         return this.value;
     }
 
-    // Método usado no "pc := pc + 1" (Linha 1 da sua tabela)
+    // Força um endereço específico no PC (usado em instruções de JUMP/Desvio)
+    write(newValue) {        
+        this.value = newValue & 0x0FFF;
+    }
+    // 0x0FFF mantém o limite físico de 12 bits do barramento de endereços
+
+    // Aumenta o contador em 1
     increment() {
-        this.value = this.value + 1;
+        this.value = (this.value + 1) & 0x0FFF;
     }
 }
 
-// Exporta uma instância pronta do PC para o processador usar
-const pc = new ProgramCounter();
-export default pc;
+export default ProgramCounter;

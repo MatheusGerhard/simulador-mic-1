@@ -6,7 +6,7 @@
 
 class MemoryBufferRegister {
     constructor() {
-        this.value = 0; // Inicializa zerado (16 bits)
+        this.value = "0000000000000000"; // Inicializa zerado (16 bits)
     }
 
     // Método para ler o conteúdo atual do MBR
@@ -16,9 +16,13 @@ class MemoryBufferRegister {
 
     // Método para escrever um dado no MBR
     write(newValue) {
-        // No MIC-1, o barramento de dados é de 16 bits (valores de 0 a 65535).
-        // O operador '& 0xFFFF' simula o limite físico de 16 fios elétricos.
-        this.value = newValue & 0xFFFF;
+        if (typeof newValue === "number") {
+            // Se vier um número (ex: da ULA), corta em 16 bits e converte para string binária de 16 caracteres
+            this.value = (newValue & 0xFFFF).toString(2).padStart(16, '0');
+        } else {
+            // Se já vier a string binária da memória, aceita direto
+            this.value = newValue;
+        }
     }
 }
 

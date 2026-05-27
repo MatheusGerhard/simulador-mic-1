@@ -6,18 +6,15 @@
 
 class InstructionRegister {
     constructor() {
-        this.value = 0; // Inicializa zerado (16 bits)
+        this.value = "0000000000000000";
     }
 
-    // Método para ler o conteúdo atual do IR
     read() {
         return this.value;
     }
 
-    // Método usado no "ir := mbr"
     write(newValue) {
-        // O operador '& 0xFFFF' simula o limite físico de 16 fios elétricos.
-        this.value = newValue & 0xFFFF;
+        this.value = newValue; // Recebe a string binária vinda do MBR
     }
 }
 

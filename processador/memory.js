@@ -1,4 +1,4 @@
-// Main Memory - Memória Principal
+// Main Memory - Memória Principal (RAM)
 
 // Descrição: Armazena o programa (instruções) e os dados que serão processados.
 // Recebe: os arrays do compilador e, em caso de escrita, um dado do MDR. 
@@ -11,18 +11,19 @@ class Memory {
     }
 
     read(address) {
-        return this.data[address];
+        // Proteção física: garante que o endereço de busca esteja dentro dos 12 bits
+        const enderecoValido = address & 0x0FFF;
+        return this.data[enderecoValido];
     }
 
     write(address, value) {
-        this.data[address] = value;
+        const enderecoValido = address & 0x0FFF;
+        this.data[enderecoValido] = value;
     }
 
     preencheInstrucoes(microinstrucoes, macroinstrucoes) {
         for (let i = 0; i < macroinstrucoes.length; i++) {
             this.write(macroinstrucoes[i].rotulo_index, microinstrucoes[i]);
-            console.log(microinstrucoes);
-            console.log(microinstrucoes[i]);
         }
     }
 }
