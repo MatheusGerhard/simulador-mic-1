@@ -1,58 +1,47 @@
-// Bus C - Barramento C
+// Bus C - Barramento C (cbus)
 
-// Descrição: Barramento de distribuição de escrita. Pega o dado final que saiu do Shifter e grava nos registradores selecionados pelos sinais de controle.
-// Controle: Recebe um objeto de sinais de 9 bits (ex: { ac: true, sp: false, ... })
+// Descrição: Barramento de distribuição de escrita.
+// Recebe: o dado final que saiu do Shifter.
+// Envia: O dado para os registradores ativados pelo MIR.
 
 class BusC {
     // O método recebe o valor final (pós-shifter) e o mapa de sinais de escrita
-    distribuir(valorFinal, sinaisC, registradores) {
-        // valorFinal já vem truncado em 16 bits pelo Shifter
-        // registradores é o objeto com as instâncias: { mar, mbr, pc, ac, sp, lv, cpp, tos, opc }
+    distribuir(valorShifter, registradores, mir) {
 
-        // 1. MAR (Memory Address Register) - 12 bits
-        if (sinaisC.mar) {
-            // Como o MAR é de 12 bits, o próprio método write dele fará o "& 0x0FFF"
-            registradores.mar.write(valorFinal);
+        // REGISTRADORES DE 12 BITS - Isola os 12 LSB
+
+        // MAR (Memory Address Register) 
+        if (mir.mar) {
+            const valor12Bits = valorShifter.slice(-12).padStart(16, "0");
+            registradores.mar.write(valor12Bits);
         }
 
-        // 2. MBR (Memory Buffer Register) - 16 bits
-        if (sinaisC.mbr) {
-            registradores.mbr.write(valorFinal);
+        // PC (Program Counter)
+        if (mir.pc) {
+            const valor12Bits = valorShifter.slice(-12).padStart(16, "0");
+            registradores.pc.write(valor12Bits);
         }
 
-        // 3. PC (Program Counter) - 12 bits
-        if (sinaisC.pc) {
-            registradores.pc.write(valorFinal);
+        // REGISTRADORES DE 16 BITS (Dados e Ponteiros de Pilha)
+
+        // MBR (Memory Buffer Register)
+        if (mir.mbr) {
+            registradores.mbr.write(valorShifter);
         }
 
-        // 4. AC (Accumulator) - 16 bits
-        if (sinaisC.ac) {
-            registradores.ac.write(valorFinal);
+        // AC (Accumulator)
+        if (mir.ac) {
+            registradores.ac.write(valorShifter);
         }
 
-        // 5. SP (Stack Pointer) - 16 bits
-        if (sinaisC.sp) {
-            registradores.sp.write(valorFinal);
+        // Y (Registrador Y)
+        if (mir.y) {
+            registradores.y.write(valorShifter);
         }
 
-        // 6. LV (Local Variable) - 16 bits
-        if (sinaisC.lv && registradores.lv) {
-            registradores.lv.write(valorFinal);
-        }
-
-        // 7. CPP - 16 bits
-        if (sinaisC.cpp && registradores.cpp) {
-            registradores.cpp.write(valorFinal);
-        }
-
-        // 8. TOS (Top of Stack) - 16 bits
-        if (sinaisC.tos && registradores.tos) {
-            registradores.tos.write(valorFinal);
-        }
-
-        // 9. OPC (Old Program Counter) - 16 bits
-        if (sinaisC.opc && registradores.opc) {
-            registradores.opc.write(valorFinal);
+        // SP (Stack Pointer)
+        if (mir.sp) {
+            registradores.sp.write(valorShifter);
         }
     }
 }

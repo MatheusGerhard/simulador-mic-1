@@ -1,39 +1,41 @@
-// Shifter - Deslocador
+// Shifter - Deslocador (SHIFTER)
 
-// Descrição: Recebe a saída de 16 bits da ULA e aplica deslocamentos antes de jogar o dado no Barramento C.
-// Controle: Controlado por 2 bits de sinais (sra1 e sll8) vindos da microinstrução.
+// Descrição: Pode deslocar o resultado da ULA antes de enviá-lo para o Barramento C.
+// Recebe: O resultado de 16 bits da ULA e os sinais de controle do MIR.
+// Envia: O dado final de 16 bits diretamente para o Barramento C.
 
 class Shifter {
-    // O método recebe o valor vindo da ULA e os sinais de controle do Shifter
-    deslocar(valorULA, sinais) {
-        // sinais é um objeto contendo: { sra1, sll8 }
-        
-        // Garante que estamos manipulando um dado purista de 16 bits
-        let dado = valorULA & 0xFFFF;
+    constructor() {
+        this.lastBitShiftedOut = "0"; // Flag interna para o "if n then"
+    }
 
-        // 1. SRA1: Deslocamento Aritmético para a Direita (1 bit)
-        if (sinais.sra1) {
-            // No JavaScript, o operador '>>' já é um deslocamento aritmético (preserva o sinal).
-            // Porém, o JS trabalha com 32 bits internamente. Para simular 16 bits corretamente:
-            
-            // Passo A: Força o número de 16 bits a ser interpretado como com sinal (complemento de dois)
-            let comSinal16 = (dado & 0x8000) ? (dado | 0xFFFF0000) : dado;
-            
-            // Passo B: Desloca 1 bit para a direita
-            let resultado = comSinal16 >> 1;
-            
-            // Passo C: Isola os 16 bits finais para o Barramento C
-            return resultado & 0xFFFF;
+    deslocar(valorULA, mir) {
+        // Monta a assinatura incluindo o novo sinal LSHIFT (vamos assumir que o MIR 
+        // agora tem o sinal lshift)
+        const assinaturaShifter = `${mir.sll8}${mir.sra1}${mir.lshift || 0}`;
+
+        switch (assinaturaShifter) {
+            case "001": // LSHIFT (Logical Shift Left 1)
+                // 1. O bit que "cai" à esquerda vira a flag N para a ControlUnit
+                this.lastBitShiftedOut = valorULA[0];
+                // 2. Desloca 1 para a esquerda, descarta o MSB e injeta 0 na direita
+                return valorULA.slice(1) + "0";
+
+            case "010": // SRA1 (Shift Right Arithmetic 1)
+                return valorULA[0] + valorULA.slice(0, 15);
+
+            case "100": // SLL8 (Shift Left Logical 8)
+                return valorULA.slice(8).padEnd(16, "0");
+
+            case "000": // Pass through
+            default:
+                return valorULA;
         }
+    }
 
-        // 2. SLL8: Deslocamento Lógico para a Esquerda (8 bits)
-        if (sinais.sll8) {
-            // Desloca 8 bits para a esquerda e passa pela "peneira" de 16 bits
-            return (dado << 8) & 0xFFFF;
-        }
-
-        // 3. Nenhum sinal ativo: O dado passa direto sem alterações
-        return dado;
+    // Método para a ControlUnit checar o bit que saiu (usado no if n then goto)
+    getFlagN() {
+        return this.lastBitShiftedOut === "1";
     }
 }
 

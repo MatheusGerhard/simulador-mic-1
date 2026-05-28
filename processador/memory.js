@@ -11,14 +11,11 @@ class Memory {
     }
 
     read(address) {
-        // Proteção física: garante que o endereço de busca esteja dentro dos 12 bits
-        const enderecoValido = address & 0x0FFF;
-        return this.data[enderecoValido];
+        return this.data[address];
     }
 
     write(address, value) {
-        const enderecoValido = address & 0x0FFF;
-        this.data[enderecoValido] = value;
+        this.data[address] = value;
     }
 
     preencheInstrucoes(microinstrucoes, macroinstrucoes) {

@@ -3,18 +3,21 @@
 // Descrição: Determina o ritmo de execução de cada microinstrução.
 // Envia: Pulsos (ticks) para a Unidade de Controle e demais componentes sincronizados.
 
-
 class Clock {
     constructor() {
-        this.totalCiclos = 0; // Contador de quantos pulsos já aconteceram
-        this.intervaloMs = 1000; // Velocidade padrão: 1 batida a cada 1000ms (1 segundo)
-        this.emExecucao = false; // Flag para o botão de Play/Pause do Frontend
+        this.totalCiclos = 0;       // Contador de quantos pulsos já aconteceram
+        this.intervaloMs = 1000;    // Velocidade padrão: 1 batida a cada 1000 ms (1 segundo)
+        this.emExecucao = false;    // Flag para o botão de Play/Pause do Frontend
+        this.timerId = null;        // Guarda a referência do loop de tempo do JavaScript
     }
 
-    // Esse método recebe a Unidade de Controle e dá um "pulso" nela
+    // Esse método recebe a Unidade de Controle, dá um "pulso" nela e retorna o sucesso da operação
     pulso(controlUnit) {
-        controlUnit.rodaCiclo();
-        this.totalCiclos++;
+        const sucesso = controlUnit.rodarCiclo();
+        if (sucesso) {
+            this.totalCiclos++;
+        }
+        return sucesso; // CORRIGIDO: Retorna true ou false para o loop saber se continua
     }
 
     // Configura a velocidade do processador (em milissegundos)
@@ -22,34 +25,49 @@ class Clock {
         this.intervaloMs = ms;
     }
 
-    // Cria uma pausa elétrica controlada
-    esperarProximaBatida() {
-        return new Promise(resolve => setTimeout(resolve, this.intervaloMs));
-    }
+    // Liga o processador em modo contínuo (Botão Play)
+    iniciar(controlUnit) {
+        if (this.emExecucao) return; // Evita duplicar timers se clicar em Play várias vezes
 
-    // Um loop automatizado que respeita o tempo do temporizador
-    async iniciarLoop(controlUnit, verificarFimSimulacao) {
         this.emExecucao = true;
 
-        while (this.emExecucao) {
-            // 1. Dá o pulso elétrico na UC
-            this.pulso(controlUnit);
+        // Cria o loop baseado nos milissegundos configurados
+        const loop = () => {
+            if (!this.emExecucao) return;
 
-            // 2. Verifica se o programa chegou ao fim (ex: PC > 5 ou instrução HALT)
-            if (verificarFimSimulacao()) {
-                this.emExecucao = false;
-                break;
+            // Executa o ciclo atual. Se o programa terminar, para o clock automaticamente.
+            const continuou = this.pulso(controlUnit);
+            
+            if (continuou) {
+                // Agenda o próximo pulso de clock
+                this.timerId = setTimeout(loop, this.intervaloMs);
+            } else {
+                this.pausar();
             }
+        };
 
-            // 3. Espera o tempo determinado antes da próxima batida
-            // Isso impede que o navegador trave e permite que o frontend atualize os leds e registradores na tela!
-            await this.esperarProximaBatida();
+        // Dispara o primeiro pulso imediatamente (sem esperar o primeiro segundo passar)
+        loop(); 
+    }
+
+    // Pausa o processador
+    pausar() {
+        this.emExecucao = false;
+        if (this.timerId) {
+            clearTimeout(this.timerId);
+            this.timerId = null;
         }
     }
 
-    // NOVO MÉTODO: Pausa o processador
-    pausar() {
-        this.emExecucao = false;
+    // Retorna o total de ciclos executados para o painel de status
+    getCycles() {
+        return this.totalCiclos;
+    }
+
+    // Reseta o estado do relógio
+    reset() {
+        this.pausar();
+        this.totalCiclos = 0;
     }
 }
 

@@ -1,20 +1,28 @@
 // Instruction Register - Registrador de Instrução (IR)
 
-// Descrição: Mantém a instrução atual que foi buscada da memória enquanto ela é decodificada.
-// Recebe: A instrução bruta vinda do Memory Data Register (MDR).
-// Envia: O opcode para a Unidade de Controle e o operando (endereço) para o MAR.
+// Descrição: Registrador de 16 bits que armazena a macroinstrução atual que está sendo executada.
+// Recebe: Strings binárias vindas do Barramento C (trazidas da memória via MBR).
+// Envia: Os bits da instrução diretamente para a Unidade de Controle para decodificação.
+
 
 class InstructionRegister {
     constructor() {
-        this.value = "0000000000000000";
+        this.value = "0000000000000000"; // Inicializa com uma instrução vazia (NOP)
     }
 
+    // Usado pela Unidade de Controle para inspecionar os bits do opcode e endereço
     read() {
         return this.value;
     }
 
+    // Escreve a instrução vinda do Barramento C
     write(newValue) {
-        this.value = newValue; // Recebe a string binária vinda do MBR
+        this.value = newValue;
+
+    }
+
+    clear() {
+        this.value = "0000000000000000";
     }
 }
 

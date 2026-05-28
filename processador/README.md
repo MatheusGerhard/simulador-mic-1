@@ -129,8 +129,56 @@ Endereços:
   
 ### Componentes
 
-Register Y: a ULA do MIC-1 não pode receber duas variáveis diretamente dos barramentos ao mesmo tempo porque causaria um conflito de sinais elétricos. Por isso, o registrador Y existe como uma 'âncora'. A Unidade de Controle isola o primeiro operando dentro de Y em um ciclo anterior, para que no ciclo seguinte a ULA possa somar o valor estável de Y com qualquer outro registrador vindo do Barramento B.
+Deslocador: é uma extensão da ULA controlada por duas linhas independentes. Implementei o comportamento exato do livro: o sra1 duplica o bit de sinal mais alto (bit 15) ao deslocar para a direita, preservando valores negativos, enquanto o sll8 desloca 8 bits para a esquerda, inserindo zeros. Esse deslocamento de 8 bits é vital no hardware real para alinhar os bytes de instruções e deslocamentos que vêm da memória.
 
-Stack Pointer (SP): é o registrador encarregado de controlar a pilha de memória, crucial para a passagem de parâmetros e variáveis locais em chamadas de subrotinas (métodos). No MIC-1, ele pode ser incrementado ou decrementado dependendo de operações de empilhamento. No simulador, ele opera nativamente em 16 bits, garantindo o comportamento de wrap-around caso a pilha estoure os limites físicos.
 
-Shifter: é uma extensão da ULA controlada por duas linhas independentes. Implementei o comportamento exato do livro: o sra1 duplica o bit de sinal mais alto (bit 15) ao deslocar para a direita, preservando valores negativos, enquanto o sll8 desloca 8 bits para a esquerda, inserindo zeros. Esse deslocamento de 8 bits é vital no hardware real para alinhar os bytes de instruções e deslocamentos que vêm da memória.
+MAR: é o nosso registrador de acoplamento com a memória. Enquanto os outros registradores internos do Data Path operam em 16 bits, o MAR possui uma máscara rígida de hardware de 12 bits (& 0x0FFF). Isso foi feito por dois motivos: primeiro, porque reflete o limite físico do chip MIC-1; segundo, porque protege a integração com o módulo de memória desenvolvido pelo grupo, garantindo que nenhum endereço inválido além de 4095 seja requisitado. Ele é conectado diretamente ao Barramento C. Quando o circuito processa algo e decide acessar a memória, o Shifter joga o endereço no Barramento C, e o MAR captura esse valor.
+
+
+MBR: é o componente onde a mágica da integração do nosso grupo acontece. Como a nossa memória RAM armazena strings binárias e o nosso Data Path processa números inteiros de 16 bits, nós centralizamos a conversão de tipos dentro do MBR. Ele atua como um transdutor de sinal: converte dados numéricos do Barramento C em strings binárias para a RAM e vice-versa, mantendo o restante das peças do processador puras e focadas em suas respectivas funções lógicas.
+
+
+PC: controla o fluxo de execução sequencial do nosso simulador. Ele opera estritamente com endereços de 12 bits, aplicando a máscara & 0x0FFF no método write. Um ponto importante da nossa modelagem de hardware é que, diferente do IR que só recebe strings, o PC envia e recebe dados numéricos através dos Barramentos B e C. Isso é fundamental para que a nossa ULA consiga realizar a aritmética de incremento ($PC = PC + 1$) ou processar desvios condicionais de forma direta e eficiente.
+
+
+Registrador AC: é o coração do armazenamento temporário no Data Path do MIC-1. No código, implementamos o isolamento dele garantindo que ele opere estritamente em 16 bits através da máscara binária & 0xFFFF. Um ponto chave do nosso design é que ele aceita tanto inteiros quanto strings binárias no método write, garantindo total compatibilidade com a memória de strings desenvolvida pelo grupo, sem violar a simulação dos barramentos.
+
+
+Registrador CPP: é o registrador que aponta para o início da área da memória RAM onde ficam guardadas as constantes do seu programa (valores fixos que não mudam, como strings ou números específicos definidos no código). Quando o processador executa a instrução LDC_W (carregar constante), ele usa o valor contido no CPP como base para achar o número na memória.
+
+
+Registrador LV: é o registrador que aponta para a base do quadro de variáveis locais da função que está sendo executada no momento. Ele funciona como uma "âncora" na memória. Quando o seu processador precisa ler a primeira variável local (instrução ILOAD 1, por exemplo), a ULA faz a conta: valor de LV + deslocamento 1.
+
+
+Registrador OPC: é um registrador de rascunho muito específico do MIC-1. Ele serve para salvar temporariamente o endereço da instrução anterior ou atual quando o processador precisa fazer um desvio (como um salto condicional ou a chamada de um método). Ele também é vital para ajudar a calcular o endereço de destino em instruções de desvio relativo, servindo como uma memória de curto prazo para o PC.
+
+
+Registrador SP: é o registrador encarregado de controlar a pilha de memória, crucial para a passagem de parâmetros e variáveis locais em chamadas de subrotinas (métodos). No MIC-1, ele pode ser incrementado ou decrementado dependendo de operações de empilhamento. No simulador, ele opera nativamente em 16 bits, garantindo o comportamento de wrap-around caso a pilha estoure os limites físicos.
+
+
+Registrador TOS: é um registrador de otimização de desempenho genial que o Tanenbaum colocou no MIC-1. Em vez de o processador ter que ir toda hora até a memória RAM para ler o valor que está no topo da pilha, o TOS mantém uma cópia exata desse valor guardada direto dentro do chip. Isso economiza dezenas de ciclos de clock durante operações aritméticas (como somar os dois últimos números da pilha).
+
+
+Registrador Y: a ULA do MIC-1 não pode receber duas variáveis diretamente dos barramentos ao mesmo tempo porque causaria um conflito de sinais elétricos. Por isso, o registrador Y existe como uma 'âncora'. A Unidade de Controle isola o primeiro operando dentro de Y em um ciclo anterior, para que no ciclo seguinte a ULA possa somar o valor estável de Y com qualquer outro registrador vindo do Barramento B.
+
+
+
+
+
+
+
+
+PC -> MAR (aponta o endereço) -> RAM (busca a string) -> MBR (recebe o dado) -> IR (guarda a instrução para a UC)
+
+
+this.flagN = ((resultado & 0x8000) !== 0) ? 1 : 0;
+
+  1111 1111 1111 1111  (Resultado da ULA = -1)
+& 1000 0000 0000 0000  (Máscara 0x8000)
+---------------------
+  1000 0000 0000 0000  (O resultado final dá 0x8000)
+
+
+No JavaScript, todos os operadores bit a bit (<<, >>) operam em 32 bits. Se nós fizéssemos apenas resultado >> 1, o JavaScript traria um bit 0 para o bit 15 caso o número fosse considerado positivo em 32 bits, quebrando o Complemento de Dois de 16 bits do MIC-1!
+
+A linha (resultado << 16) >> 16 é um truque genial: ela joga o bit 15 do seu processador lá para o topo do registrador de 32 bits do JavaScript e depois puxa de volta. Isso força o JavaScript a entender que aquele número de 16 bits é um número sinalizado de verdade. Quando aplicamos o >> 1, o bit de sinal é duplicado perfeitamente.

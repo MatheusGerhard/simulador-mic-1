@@ -4,7 +4,7 @@
 
 class MicroprogramCounter {
     constructor() {
-        this.value = 0; // Começa apontando para a microinstrução 0 (Busca)
+        this.value = "0000000000000000"; // Começa apontando para a microinstrução 0 (Busca)
     }
 
     // Lê o endereço atual da microinstrução
@@ -13,9 +13,12 @@ class MicroprogramCounter {
     }
 
     // Modifica o MPC para dar o salto para o próximo passo ou decodificação
-    // O operador '& 0x1FF' simula o limite físico de 9 bits.
     write(newValue) {
-        this.value = newValue & 0x1FF;
+        this.value = newValue;
+    }
+
+    clear() {
+        this.value = "0000000000000000";
     }
 }
 

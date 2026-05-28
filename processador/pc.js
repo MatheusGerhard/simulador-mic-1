@@ -1,29 +1,27 @@
 // Program Counter - Contador de Programa (PC)
 
-// Descrição: Armazena o endereço de memória da próxima instrução a ser buscada e executada.
-// Recebe: Sinal de incremento (+1) ou um novo endereço (proveniente de instruções de desvio/jump).
-// Envia: O endereço atual para o Memory Address Register (MAR) para iniciar o ciclo de busca.
+// Descrição: Registrador de 12 bits que armazena o endereço da próxima macroinstrução a ser buscada na RAM.
+// Recebe: Dados do Barramento C (seja o PC incrementado ou um endereço de JUMP).
+// Envia: Seu valor numérico para o Barramento B (para ser incrementado ou testado pela ULA).
 
 class ProgramCounter {
     constructor() {
-        this.value = 0; // O programa começa na posição 0 da memória
+        this.value = "0000000000000000"; // Inicializa apontando para o endereço 0 da RAM
     }
 
-    
-    // Método para o processador saber qual é o endereço atual
+    // Lê o valor atual (usado pelo Barramento B)
     read() {
         return this.value;
     }
 
-    // Força um endereço específico no PC (usado em instruções de JUMP/Desvio)
-    write(newValue) {        
-        this.value = newValue & 0x0FFF;
+    // Escreve um novo endereço vindo do Barramento C
+    write(newValue) {
+        this.value = newValue;
+        // console.log(`>>> PC atualizado para: ${parseInt(newValue, 2)}`);
     }
-    // 0x0FFF mantém o limite físico de 12 bits do barramento de endereços
 
-    // Aumenta o contador em 1
-    increment() {
-        this.value = (this.value + 1) & 0x0FFF;
+    clear() {
+        this.value = "0000000000000000";
     }
 }
 

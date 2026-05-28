@@ -4,40 +4,106 @@
 // Recebe: O opcode vindo do IR e sinais de flags da ALU.
 // Envia: Sinais de controle (Enable, Read, Write, Select ALU Op) para todos os outros componentes.
 
+// Importações
+import MicroprogramCounter from "./mpc.js";
+import MicroInstructionRegister from "./mir.js";
+import ControlStore from "./rom.js";
+
+import ArithmeticLogicUnit from "./alu.js";
+import Shifter from "./shifter.js";
+import BusB from "./busB.js";
+import BusC from "./busC.js";
+
+import Accumulator from "./ac.js";
+import ProgramCounter from "./pc.js";
+import InstructionRegister from "./ir.js";
+import MemoryAddressRegister from "./mar.js";
+import MemoryBufferRegister from "./mbr.js";
+import RegisterY from "./y.js";
+import StackPointer from "./sp.js";
+
+import Clock from "./clock.js";
+
+
 class ControlUnit {
-    // O constructor recebe as peças (objetos) de hardware que vai controlar
-    constructor(mpc, memoria, pc, mar, mbr, ir) {
-        this.mpc = mpc;
-        this.memoria = memoria;
-        this.pc = pc;
-        this.mar = mar;
-        this.mbr = mbr;
-        this.ir = ir;
+    constructor(memoria, rom) {
+        // --- Memórias Externas/Conectadas ---
+        this.memoria = memoria; // RAM do sistema
+        this.rom = rom;         // Control Store contendo o microprograma gravado
+
+        // --- Registradores de Controle Internos ---
+        this.mpc = new MicroprogramCounter();
+        this.mir = new MicroInstructionRegister();
+
+        // --- Banco Interno de Registradores (Register File) ---
+        this.registradores = {
+            ac:  new Accumulator(),
+            pc:  new ProgramCounter(),
+            ir:  new InstructionRegister(),
+            tir: new InstructionRegister(),
+            mar: new MemoryAddressRegister(),
+            mbr: new MemoryBufferRegister(),
+            y:   new RegisterY(),
+            sp:  new StackPointer()
+        };
+
+        // --- Circuitos Combinacionais Internos ---
+        this.alu = new ArithmeticLogicUnit();
+        this.shifter = new Shifter();
+        this.bbus = new BusB();
+        this.cbus = new BusC();
     }
 
-    // O ciclo se inicia
-    rodaCiclo() {
-        switch (this.mpc.read()) {
-            case 0:
-                this.mar.write(this.pc.read());
-                this.mbr.write(this.memoria.read(this.mar.read()));
-                
-                // CORREÇÃO: Atualizamos o valor usando .write()
-                this.mpc.write(1); 
-                break;
+    rodarCiclo() {
+        const enderecoAtual = parseInt(this.mpc.read(), 2);
+        const micro = this.rom.read(enderecoAtual);
+        if (!micro) return;
+        
+        this.mir.carregar(micro);
 
-            case 1:
-                this.pc.increment();
-                this.mbr.write(this.memoria.read(this.mar.read()));
-                
-                this.mpc.write(2); 
-                break;
-
-            case 2:
-                this.ir.write(this.mbr.read());                
-                this.mpc.write(0); 
-                break;
+        // 1. Lógica de MEMÓRIA (Antes do Data Path para carregar o MBR)
+        // Se o sinal de leitura está ativo
+        if (this.mir.read) {
+            const endereco = parseInt(this.registradores.mar.read(), 2);
+            const dado = this.memoria.read(endereco);
+            this.registradores.mbr.write(dado);
         }
+
+        // 2. Execução do Data Path
+        let valorBusB = this.bbus.read(this.registradores, this.mir.bbus);
+        let resultado = this.alu.calcular(this.registradores.y.read(), valorBusB, this.mir);
+        resultado = this.shifter.deslocar(resultado, this.mir);
+        this.cbus.distribuir(resultado, this.registradores, this.mir);
+
+        // 3. Lógica de MEMÓRIA (Após o Data Path para escrita)
+        if (this.mir.write) {
+            const endereco = parseInt(this.registradores.mar.read(), 2);
+            const dado = this.registradores.mbr.read();
+            this.memoria.write(endereco, dado);
+        }
+
+        const proximo = this.calcularProximoEndereco(micro);
+        console.log(`>>> Próximo endereço calculado: ${proximo}`); // Veja se está saindo "0000000000000000"
+        this.mpc.write(proximo);
+    }
+
+    calcularProximoEndereco(micro) {
+        let proximo = micro.nextAddress;
+
+        // 1. Prioridade: Teste de Bit (se a microinstrução exige isso)
+        if (micro.testFlag && (this.shifter.getFlagN() || this.alu.getNegativeFlag())) {
+            proximo = micro.jumpAddress;
+        } 
+        // 2. Se não for teste de bit, verifica se é salto de Opcode (JMPC)
+        else if (micro.jmpc) {
+            const mbrValue = this.registradores.mbr.read();
+            const opcode = parseInt(mbrValue.slice(0, 4), 2);
+            proximo = opcode; // Remova o << 4. Assim, opcode 7 pula para 0x07.
+            // console.log(`>>> JMPC: Opcode ${opcode} detectado. Pulando para ${proximo}`)
+        }
+
+        // Retorna formatado para o seu MPC
+        return proximo.toString(2).padStart(16, "0");
     }
 }
 

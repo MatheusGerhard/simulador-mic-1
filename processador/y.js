@@ -1,25 +1,26 @@
 // Registrador Y (Y)
 
 // Descrição: Registrador de 16 bits que serve como a entrada fixa esquerda da ULA.
-// Conexão: É carregado pelo barramento A/B e mantém o valor estável para a ULA.
+// Recebe: Dados do Barramento C (para travar o primeiro operando de uma operação).
+// Envia: Dados para a entrada esquerda da ULA.
 
 class RegisterY {
     constructor() {
-        this.value = 0; // Inicializa zerado (16 bits)
+        this.value = "0000000000000000"; // Inicializa zerado (16 bits)
     }
 
-    // Lê o valor numérico atual (alimenta diretamente o lado esquerdo da ULA)
+    // Usado diretamente pela ULA a cada ciclo de cálculo
     read() {
         return this.value;
     }
 
-    // Escreve um dado vindo do barramento interno para preparar uma operação da ULA
+    // Escreve um valor vindo do Barramento C
     write(newValue) {
-        if (typeof newValue === "string") {
-            this.value = parseInt(newValue, 2) & 0xFFFF;
-        } else {
-            this.value = newValue & 0xFFFF; // Truncamento purista de hardware
-        }
+        this.value = newValue;
+    }
+
+    clear() {
+        this.value = "0000000000000000";
     }
 }
 
