@@ -8,7 +8,7 @@ class Montador{
     
 
     constructor(assemblyCode){
-        this.assemblyCode = assemblyCode;;
+        this.assemblyCode = assemblyCode;
         this.assemblyCode = this.stringify(); //Transforma o código em um array de linhas, removendo espaços e linhas vazias. Cada elemento é uma instrução :( .        
         
     }
@@ -25,7 +25,7 @@ class Montador{
     // "LODD 100" -> { opcode: "LODD", operand: "100" }
     tokeniza_linha(linha, linha_num){
         let index_fim = linha.indexOf(";"); //Remove comentários
-        linha = linha.substring(0, index_fim);
+        if (index_fim !== -1) linha = linha.substring(0, index_fim);
 
         linha = linha.split(" ").filter(token => token.length > 0); //Remove espaços extras e divide a linha em tokens
         let rotulo = null;
@@ -74,6 +74,9 @@ class Montador{
             }else{
                 operando = parseInt(operando); //Tenta converter o operando para um número, se for possível
             }
+        } else if (linha.length === 1) {
+            // Instrução sem operando
+            opcode = linha[0];
         }else{
             return { rotulo,rotulo_index, opcode, operando, error: 1 };
         }
