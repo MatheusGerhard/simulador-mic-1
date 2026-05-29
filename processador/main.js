@@ -50,10 +50,11 @@ memoria.preencheInstrucoes(programa, [
 
 console.log("=== Executando teste de escrita na RAM ===");
 
-const CICLOS = 15; 
+const CICLOS = 10; 
 for (let i = 0; i < CICLOS; i++) {
     cpu.rodarCiclo();
-    console.log(`Ciclo ${i} | MPC: ${cpu.mpc.read()} | AC: ${cpu.registradores.ac.read()} | Mem[10]: ${memoria.read(10)}`);
+    console.log(`Ciclo ${i} | MPC: ${cpu.mpc.read()} | AC: ${cpu.registradores.ac.read()}`);
 }
 
 console.log("=== Valor Final na RAM[10]:", memoria.read(10), "===");
+console.log("=== Valor Final na RAM[10]:", memoria.read(1), "===");

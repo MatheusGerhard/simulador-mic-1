@@ -57,7 +57,7 @@ class ControlUnit {
     rodarCiclo() {
         const enderecoAtual = parseInt(this.mpc.read(), 2);
         const micro = this.rom.read(enderecoAtual);
-        if (!micro) return;
+        if (!micro) return false;
         
         this.mir.carregar(micro);
 
@@ -82,24 +82,25 @@ class ControlUnit {
             this.memoria.write(endereco, dado);
         }
 
-        const proximo = this.calcularProximoEndereco(micro);
-        console.log(`>>> Próximo endereço calculado: ${proximo}`); // Veja se está saindo "0000000000000000"
+        const proximo = this.calcularProximoEndereco(this.alu.getZeroFlag(), this.alu.getNegativeFlag());
         this.mpc.write(proximo);
+        return true;
     }
 
-    calcularProximoEndereco(micro) {
-        let proximo = micro.nextAddress;
+    calcularProximoEndereco(z, n) {
+        let proximo = this.mir.nextAddress;
 
-        // 1. Prioridade: Teste de Bit (se a microinstrução exige isso)
-        if (micro.testFlag && (this.shifter.getFlagN() || this.alu.getNegativeFlag())) {
-            proximo = micro.jumpAddress;
-        } 
-        // 2. Se não for teste de bit, verifica se é salto de Opcode (JMPC)
-        else if (micro.jmpc) {
+        // Lógica JAM (Jumps Condicionais)
+        // Se JAMZ e Z=1, ou JAMN e N=1, realizamos um OR no bit mais significativo do endereço
+        if ((this.mir.jamz && z) || (this.mir.jamn && n)) {
+            proximo |= 0x100; // Salta para a região alta da ROM (256-511)
+        }
+
+        // Se JMPC estiver ativo, pula para o endereço do Opcode (0-15)
+        if (this.mir.jmpc) {
             const mbrValue = this.registradores.mbr.read();
             const opcode = parseInt(mbrValue.slice(0, 4), 2);
-            proximo = opcode; // Remova o << 4. Assim, opcode 7 pula para 0x07.
-            // console.log(`>>> JMPC: Opcode ${opcode} detectado. Pulando para ${proximo}`)
+            proximo = opcode;
         }
 
         // Retorna formatado para o seu MPC

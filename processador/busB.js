@@ -20,9 +20,11 @@ class BusB {
             case 3: // SP (Stack Pointer)
                 return registradores.sp.read();
 
-            case 7: // MBR - Onde chegam as macroinstruções e dados da RAM
-                // Isola os 12 bits inferiores para descartar o Opcode e manter apenas o dado/constante
+            case 4: // MBR Mascarado (12 bits inferiores) - Para LOCO e Endereços
                 return "0000" + registradores.mbr.read().slice(-12);
+
+            case 7: // MBR - Onde chegam as macroinstruções e dados da RAM
+                return registradores.mbr.read();
 
             default:
                 // Se o código for inválido ou nenhum registrador colocar dados na via (ex: código 9 a 15)

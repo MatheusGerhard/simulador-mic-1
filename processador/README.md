@@ -182,3 +182,83 @@ this.flagN = ((resultado & 0x8000) !== 0) ? 1 : 0;
 No JavaScript, todos os operadores bit a bit (<<, >>) operam em 32 bits. Se nós fizéssemos apenas resultado >> 1, o JavaScript traria um bit 0 para o bit 15 caso o número fosse considerado positivo em 32 bits, quebrando o Complemento de Dois de 16 bits do MIC-1!
 
 A linha (resultado << 16) >> 16 é um truque genial: ela joga o bit 15 do seu processador lá para o topo do registrador de 32 bits do JavaScript e depois puxa de volta. Isso força o JavaScript a entender que aquele número de 16 bits é um número sinalizado de verdade. Quando aplicamos o >> 1, o bit de sinal é duplicado perfeitamente.
+
+
+// 0x00 - MAIN1: Inicia a busca da macroinstrução enviando o PC para o MAR
+microprograma[0x00] = {
+    label: "Main1",
+    bbus: 1,         
+    f0: 0, f1: 1, ena: 0, enb: 1, inva: 0, inc: 0, // Passa PC direto pela ULA
+    mar: 1,          // Carrega o endereço do PC no MAR
+    read: 1,         // Dispara o sinal de leitura da RAM externa
+    nextAddress: 0x1E // Vai para o Main2 esperar o atraso da memória
+};
+
+// 0x1E - MAIN2: Ciclo de espera da RAM. Aproveita para atualizar o PC (PC = PC + 1)
+microprograma[0x1E] = {
+    label: "Main2",
+    bbus: 1,         // CORRIGIDO: 0 seleciona o PC
+    f0: 1, f1: 1, ena: 1, enb: 1, inva: 0, inc: 1, // ULA calcula: PC + 1
+    pc: 1,           // Grava o novo valor de volta no PC
+    nextAddress: 0x1F // Vai para o Main3 com o dado já perfeitamente estável no MBR
+};
+
+// 0x1F - MAIN3: O dado está 100% seguro no MBR. Dispara o JMPC para decodificar o Opcode!
+microprograma[0x1F] = {
+    label: "Main3",
+    bbus: 3,         // Mantém o barramento em repouso apontando para o MBR (ID 3)
+    f0: 0, f1: 0, ena: 0, enb: 0, inva: 0, inc: 0, 
+    jamz: 0, jamn: 0, jmpc: 1, // Executa o salto combinacional com base no Opcode do MBR
+    nextAddress: 0x00 
+};
+
+// 0x01 - STOD: Store Direct (Opcode 0001) -> m[x] := ac
+microprograma[0x01] = {
+    label: "stod1",
+    bbus: 7,         // CORRIGIDO: 3 seleciona o MBR (isola os 12 bits inferiores no barramento)
+    f0: 0, f1: 1, ena: 0, enb: 1, inva: 0, inc: 0, 
+    mar: 1,          // Joga o endereço filtrado direto no MAR
+    nextAddress: 0x11
+};
+microprograma[0x11] = {
+    label: "stod2",
+    bbus: 1,         // CORRIGIDO: 1 seleciona o Acumulador (AC)
+    f0: 0, f1: 1, ena: 0, enb: 1, inva: 0, inc: 0, // Passa o valor do AC pela ULA
+    mbr: 1,          // Carrega o dado do AC no MBR
+    write: 1,        // Ativa o pulso de escrita na RAM externa
+    nextAddress: 0x00 // Retorna para o Main1 buscar a próxima instrução
+};
+
+// 0x02 - ADDD: Add Direct (Opcode 0010) -> ac := ac + m[x]
+microprograma[0x02] = {
+    label: "addd1",
+    bbus: 7,         // CORRIGIDO: 3 seleciona o MBR (contém o endereço X da variável)
+    f0: 0, f1: 1, ena: 0, enb: 1, inva: 0, inc: 0,
+    mar: 1,          // Carrega o endereço no MAR
+    read: 1,         // Dispara a leitura da RAM
+    nextAddress: 0x12
+};
+microprograma[0x12] = {
+    label: "addd2",
+    // Ciclo de atraso da leitura: O dado vindo da RAM acabou de estabilizar no MBR!
+    bbus: 7,         // CORRIGIDO: 3 lê o valor da variável que acabou de chegar no MBR
+    f0: 0, f1: 1, ena: 0, enb: 1, inva: 0, inc: 0,
+    y: 1,            // Trava o valor lido na entrada fixa esquerda da ULA (Reg Y)
+    nextAddress: 0x22
+};
+microprograma[0x22] = {
+    label: "addd3",
+    bbus: 1,         // CORRIGIDO: 1 seleciona o AC para injetar na direita da ULA
+    f0: 1, f1: 1, ena: 1, enb: 1, inva: 0, inc: 0, // ULA calcula combinacionalmente: Y + AC
+    ac: 1,           // Grava o resultado da soma de volta no Acumulador
+    nextAddress: 0x00 // Ciclo encerrado, volta para o Main1
+};
+
+// 0x07 - LOCO: Load Constant (Opcode 0111) -> ac := x
+microprograma[0x07] = {
+    label: "loco1",
+    bbus: 7, 
+    f0: 0, f1: 1, ena: 0, enb: 1, inva: 0, inc: 0,
+    ac: 1, 
+    nextAddress: 0x00
+};

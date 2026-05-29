@@ -12,19 +12,45 @@ const microprograma = [];
 // MICROPROGRAMA DO MAC-1 CORRIGIDO (Sinais: 1=PC, 2=AC, 3=SP, 7=MBR)
 // ============================================================================
 
+// 0x00 - Fetch: Ciclo de busca
+microprograma[0x00] = {
+    label: "fetch1",
+    bbus: 1, // PC
+    f0: 0, f1: 1, ena: 0, enb: 1, inva: 0, inc: 0,
+    mar: 1,
+    nextAddress: 0x40
+};
+microprograma[0x40] = {
+    label: "fetch2",
+    bbus: 1, // PC
+    f0: 1, f1: 1, ena: 0, enb: 1, inva: 0, inc: 1, 
+    pc: 1,
+    read: 1,
+    nextAddress: 0x41
+};
+microprograma[0x41] = {
+    label: "fetch3",
+    bbus: 7, // MBR
+    f0: 0, f1: 1, ena: 0, enb: 1, inva: 0, inc: 0,
+    ir: 1,
+    jmpc: 1,
+    nextAddress: 0x00 // Será sobrescrito pelo hardware de decodificação
+};
+
+
 // 0x08 - LODD: Load Direct (Opcode 1000) -> AC := m[x]
 microprograma[0x08] = {
     label: "lodd1",
     bbus: 7,           // Seleciona o MBR (Endereço X)
     f0: 0, f1: 1, ena: 0, enb: 1, inva: 0, inc: 0,
     mar: 1,            // Carrega o endereço no MAR
-    read: 1,           // Dispara a leitura da RAM
     nextAddress: 0x18
 };
 microprograma[0x18] = {
     label: "lodd2",
     bbus: 7,           // Pega o valor lido da memória que chegou no MBR
     f0: 0, f1: 1, ena: 0, enb: 1, inva: 0, inc: 0,
+    read: 1,           // Movemos o sinal de leitura para onde o dado é usado
     ac: 1,             // Carrega o valor no AC
     nextAddress: 0x00  // Volta para o ciclo de busca
 };
@@ -53,13 +79,13 @@ microprograma[0x02] = {
     bbus: 7,           // Pega o endereço X do MBR
     f0: 0, f1: 1, ena: 0, enb: 1, inva: 0, inc: 0,
     mar: 1,            // Carrega endereço no MAR
-    read: 1,           // Dispara leitura da RAM
     nextAddress: 0x12
 };
 microprograma[0x12] = {
     label: "addd2",
     bbus: 7,           // Lê o valor que chegou da memória (MBR)
     f0: 0, f1: 1, ena: 0, enb: 1, inva: 0, inc: 0,
+    read: 1,
     y: 1,              // Trava o valor no registrador Y para a soma
     nextAddress: 0x22
 };
@@ -142,7 +168,7 @@ microprograma[0x03] = {
 // 0x07 - LOCO: Load Constant (Opcode 0111) -> AC := constante
 microprograma[0x07] = {
     label: "loco1",
-    bbus: 7,           // Seleciona o MBR (Onde está o valor constante da instrução)
+    bbus: 4,           // Seleciona o MBR Mascarado (apenas a constante de 12 bits)
     f0: 0, f1: 1, ena: 0, enb: 1, inva: 0, inc: 0,
     ac: 1,             // Carrega o valor constante diretamente no AC
     nextAddress: 0x00  // Retorna para o ciclo de busca
@@ -330,24 +356,24 @@ microprograma[0x3F] = {
     nextAddress: 0x00
 };
 
+// --- Relocação de Instruções Estendidas para evitar conflitos de endereço ---
 
-// 0x10 - PSHI: Push Immediate (Opcode 1000 - Exemplo de Opcode) -> m[SP] := Valor, SP := SP - 1
-microprograma[0x10] = {
+microprograma[0x80] = {
     label: "pshi1",
     bbus: 3,           // Seleciona o SP
     f0: 0, f1: 1, ena: 0, enb: 1, inva: 0, inc: 0,
     mar: 1,            // Carrega o topo da pilha (SP) no MAR
-    nextAddress: 0x1A
+    nextAddress: 0x81
 };
-microprograma[0x1A] = {
+microprograma[0x81] = {
     label: "pshi2",
     bbus: 7,           // Seleciona o Valor da constante (que está no MBR)
     f0: 0, f1: 1, ena: 0, enb: 1, inva: 0, inc: 0,
     mbr: 1,            // Move o valor da constante para o MBR
     write: 1,          // Salva o valor na memória
-    nextAddress: 0x2A
+    nextAddress: 0x82
 };
-microprograma[0x2A] = {
+microprograma[0x82] = {
     label: "pshi3",
     bbus: 3,           // Seleciona o SP
     f0: 0, f1: 1, ena: 0, enb: 1, inva: 1, inc: 0, // SP - 1
@@ -356,17 +382,16 @@ microprograma[0x2A] = {
 };
 
 
-// 0x11 - POPI: Pop from Stack to AC (Opcode 1001) -> SP := SP + 1, AC := m[SP]
-microprograma[0x11] = {
+microprograma[0x83] = {
     label: "popi1",
     bbus: 3,           // Seleciona o SP
     f0: 0, f1: 1, ena: 0, enb: 1, inva: 0, inc: 1, // SP + 1
     sp: 1,             // Atualiza o SP (apontando para o item a remover)
     mar: 1,            // Carrega o novo SP no MAR
     read: 1,           // Dispara leitura da RAM
-    nextAddress: 0x1B
+    nextAddress: 0x84
 };
-microprograma[0x1B] = {
+microprograma[0x84] = {
     label: "popi2",
     bbus: 7,           // Pega o valor lido da memória (MBR)
     f0: 0, f1: 1, ena: 0, enb: 1, inva: 0, inc: 0,
