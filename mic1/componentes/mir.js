@@ -6,16 +6,14 @@
 
 class MicroInstructionRegister {
     constructor() {
-        // --- Metadados de Depuração ---
-        this.label = "";       // Guarda o nome da microinstrução atual (ex: "Main1")
-
-        this.addr = "000000000";    // Próximo endereço
-        this.jam = "000";           // Jumps
-        this.ula  = "000000";       // ULA = f0, f1, ena, enb, inva, inc
-        this.des  = "00";           // sll8 e sra1
-        this.c  = "000000000";      // Barramento C
-        this.mem   = "000";         // Leitura/Escrita
-        this.b  = "0000";           // Barramento B  
+        this.label = "";         // Microinstrução atual (ex: "Main1")
+        this.addr  = "000000000";// Próximo endereço
+        this.jam   = "000";      // Jumps
+        this.ula   = "000000";   // ULA = f0, f1, ena, enb, inva, inc
+        this.des   = "00";       // sll8 e sra1
+        this.c     = "000000000";// Barramento C
+        this.mem   = "000";      // Leitura/Escrita
+        this.b     = "0000";     // Barramento B  
     }
 
     // Recebe a instrução do Armazenamento de controle

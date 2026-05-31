@@ -1,4 +1,4 @@
-import Hardware from "./main.js";
+import Hardware from "./controlUnit.js";
 
 const hw = new Hardware();
 

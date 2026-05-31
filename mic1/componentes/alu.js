@@ -8,23 +8,18 @@
 class ArithmeticLogicUnit {
     constructor() {
         // Flags de JUMPs para a próxima instrução
-        this.flagZ = 0; // 1 se o resultado for zero
-        this.flagN = 0; // 1 se o resultado for negativo
+        this.Z = 0; // 1 se o resultado for zero
+        this.N = 0; // 1 se o resultado for negativo
     }
 
-    // O método principal que processa os dados com base nos sinais de controle do MIC-1
-    calcular(valorY, valorBusB, mir) {
-        // CONVERSÃO INTERNA ISOLADA: Transforma as fiações de string em inteiros para calcular
-        const A = parseInt(valorY, 2);
-        const B = parseInt(valorBusB, 2);
+    calcular(h, busb, mir) {
+        // Converte para Int
+        const A = parseInt(h, 2);
+        const B = parseInt(busb, 2);
         
         let resultado = 0;
 
-        // Monta a string de assinatura combinando as 6 linhas de controle: "F0|F1|ENA|ENB|INVA|INC"
-        const assinaturaEletrica = mir;
-
-        // Switch case baseado puramente na tabela oficial do Tanenbaum!
-        switch (assinaturaEletrica) {
+        switch (mir) {
             case "011000": // A (Passa H direto)
                 resultado = A;
                 break;
@@ -74,27 +69,26 @@ class ArithmeticLogicUnit {
                 resultado = -1;
                 break;
             default:
-                // Se cair aqui, a microinstrução tentou uma combinação inválida de hardware
                 resultado = 0;
         }
 
-        // Truncamento rígido de 16 bits em nível numérico
+        // Truncamento de 16 bits 
         resultado = resultado & 0xFFFFFFFF;
 
-        // Atualização das Flags de Status (Trabalham com o valor numérico truncado)
-        this.flagZ = (resultado === 0) ? 1 : 0;
-        this.flagN = ((resultado & 0x80000000) !== 0) ? 1 : 0;
+        // Atualização das Flags de Status
+        this.Z = (resultado === 0) ? 1 : 0;
+        this.N = ((resultado & 0x80000000) !== 0) ? 1 : 0;
 
-        // RETORNO DE HARDWARE: Converte o número final calculado de volta para uma String Binária de 16 bits estável
+        // Converte para String
         return resultado.toString(2).padStart(32, "0");
     }
 
     // Envia para o Bit Alto
     getZ() {
-        return this.flagZ;
+        return this.Z;
     }
     getN() {
-        return this.flagN;
+        return this.N;
     }
 }
 
