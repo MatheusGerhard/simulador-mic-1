@@ -1,7 +1,6 @@
 import './App.css'
-import Memory from './components/memory'
-import memoria from '../processador/memory'
 import Montador from '../montador/montador'
+import Memory from './components/memory';
 export default function App() {
 
   function handleClick(){
@@ -27,7 +26,6 @@ export default function App() {
       <textarea type="text" id='codigo' placeholder='Digite o código aqui...'/>
       <button onClick={handleClick}>Botão</button>
       <Memory/>
-      
     </>
   )
 }
