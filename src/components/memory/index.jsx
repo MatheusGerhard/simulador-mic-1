@@ -1,40 +1,37 @@
-import { useEffect, useState } from "react";
-import memoria from "../../../processador/memory";
-import styles from './styles.module.css'
+import { useState } from 'react';
+import MemoryDisplay from './memoryDisplay';
+import MemoryButton from './memoryButton';
+import styles from './styles.module.css'   
 
 export default function Memory() {
-    const [, forceUpdate] = useState(0);
+    const [isOpen, setIsOpen] = useState(false);
+    const [memoryNum, setMemoryNum] = useState(1);
 
-    useEffect(() => {
-        const interval = setInterval(() => {
-            forceUpdate((v) => v + 10);
-        }, 100);
+    function toggleMemory() {
+        setIsOpen(current => !current);
+        if(isOpen){
+            setMemoryNum(1);
+        }
+    }
 
-        return () => clearInterval(interval);
-    }, []);
+    function addMemory() {
+        if(memoryNum < 3){
+            setMemoryNum(current => current + 1);
+        }
+    }
 
     return (
-        <div className={styles.memory}>
-            <div className={styles.title}>
-                Memória
-            </div>
-            <div className={styles.container}>
-                {
-                    memoria.data.map((value, index) => (
-                        <div key={index}>
-                            <div className={styles.adress}>
-                                <div className={styles.index}>
-                                    {index} :
-                                </div>
-                                <div className={styles.value}>
-                                    {value}
-                                </div>
-                            </div>
-                            <div className={styles.division}></div>
-                        </div>
-                    ))
-                }
-            </div>
+        <div className={styles.container}>
+            {isOpen &&
+                Array.from({ length: memoryNum }).map((_, index) => (
+                    <MemoryDisplay
+                        key={index}
+                        onAddMemory={addMemory}
+                    />
+                ))
+            }
+
+            <MemoryButton onClick={toggleMemory} />
         </div>
     );
 }
