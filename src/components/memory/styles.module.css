@@ -1,80 +1,8 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap');
-
-.memory {
-    width: 100%;
-    max-width: 420px;
-    height: 100%;
-    background: #f8fafc;
-    border: 1px solid #dbe3ef;
-    border-radius: 18px;
-    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
-    overflow: hidden;
-    font-family: 'Roboto', sans-serif;
-}
-
-.title {
-    padding: 18px 22px;
-    background: linear-gradient(135deg, #1e3a5f, #2c5680);
-    color: #ffffff;
-    font-size: 1.35rem;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-}
-
-.container {
-    max-height: 520px;
-    overflow-y: auto;
-    padding: 10px 0;
-}
-
-.adress {
-    display: grid;
-    grid-template-columns: 70px 1fr;
-    align-items: center;
-    padding: 12px 22px;
-    transition: background-color 0.2s ease;
-}
-
-.adress:hover {
-    background-color: #eef4fb;
-}
-
-.index {
-    color: #64748b;
-    font-size: 1.2rem;
-    font-weight: 600;
-    font-family: 'Roboto Mono', monospace;
-}
-
-.value {
-    color: #0f172a;
-    font-size: 1.2rem;
-    font-weight: 500;
-    font-family: 'Roboto Mono', monospace;
-    text-align: right;
-    overflow-wrap: anywhere;
-}
-
-.division {
-    height: 1px;
-    margin: 0 22px;
-    background: #e2e8f0;
-}
-
-.container::-webkit-scrollbar {
-    width: 8px;
-}
-
-.container::-webkit-scrollbar-track {
-    background: #f1f5f9;
-}
-
-.container::-webkit-scrollbar-thumb {
-    background: #94a3b8;
-    border-radius: 999px;
-}
-
-.container::-webkit-scrollbar-thumb:hover {
-    background: #64748b;
+.container{
+    position: fixed;
+    right: 24px;
+    bottom: 90px;
+    display: flex;
+    flex-direction: row-reverse;
+    gap: 2rem;
 }
