@@ -1,23 +1,16 @@
-// Amux - entrada esquerda da ULA:
+// Amux - 
 
-class Registers {
-    constructor() {
-        this.value = "0000000000000000";
-    }
+// Descrição: Recebe o valor do Latch A, MBR e o comando do MIR e seleciona o valor correto para entrar na ALU
 
-    // Recebe um valor do MBR e A latch
-    write(newValue) {
-        this.value = newValue;
-    }
-
-    // Envia envia para ULA.
-    read() {
-        return this.value;
-    }
-
-    clear() {
-        this.value = "0000000000000000";
+class Amux {
+    select(aValue, mbrValue, mirValue) {
+        if (this.mirValue === "0") {
+            return aValue;
+        } 
+        if (this.mirValue === "1") {
+            return mbrValue;
+        }
     }
 }
 
-export default Registers;
+export default Amux;

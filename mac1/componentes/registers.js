@@ -1,9 +1,9 @@
 // Registradores - Utilizados para salvar dados:
 
-// AC - reserva para fazer conta
-// Amux - entrada esquerda da ULA
-// PC - endereço da próxima instrução
-// SP - ponteiro para o topo da pilha
+// 0000: AC - reserva para fazer conta
+// 0001: IR - a macroinstrução atual
+// 0010: PC - o endereço da próxima macroinstrução
+// 0011: SP - ponteiro para o topo da pilha
 
 class Registers {
     constructor() {

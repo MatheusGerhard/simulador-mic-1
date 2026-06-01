@@ -7,7 +7,6 @@ class MicroprogramCounter {
         this.value = 0;
     }
 
-
     // Recebe dado de Mmux
     write(newValue) {
         this.value = newValue;

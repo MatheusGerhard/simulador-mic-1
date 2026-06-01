@@ -1,9 +1,8 @@
 // Increment - Incrementador do MPC
 
 class Increment {
-    calculate(currentMpc) {
-        const nextValue = (currentMpc + 1) & 0x1FF;
-        return nextValue;
+    increment() {
+        return (this.value + 1) & 0x1FF;
     }
 }
 

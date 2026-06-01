@@ -9,21 +9,21 @@ class MicroInstructionRegister {
         this.label = "";       // Guarda o nome da microinstrução atual (ex: "Main1")
 
         this.amux = "0";    
-        this.cond = "00";   
+        this.cond = "00";
         this.alu  = "00";      
         this.sh   = "00";          
         this.mbr  = "0";      
         this.mar  = "0";          
         this.rd   = "0";         
         this.wr   = "0";         
-        this.enc  = "0";        
+        this.enc  = "0";
         this.c    = "0000";        
         this.b    = "0000";         
-        this.a    = "0000";       
-        this.addr = "0000";
+        this.a    = "0000";
+        this.addr = "00000000";
     }
 
-    // Recebe a instrução do Armazenamento de controle
+    // Recebe a instrução do Armazenamento de Controle
     write (micro) {
         if (typeof micro !== 'object' || micro === null) return;
         
@@ -40,7 +40,7 @@ class MicroInstructionRegister {
         this.c     = micro.c     || "0000";
         this.b     = micro.b     || "0000";
         this.a     = micro.a     || "0000";
-        this.addr  = micro.addr  || "0000";
+        this.addr  = micro.addr  || "00000000";
     }
 
     // Envia cada parte da instrução para o componente específico

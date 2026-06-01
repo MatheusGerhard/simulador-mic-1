@@ -5,21 +5,23 @@
 class MSL {
     constructor() {
         this.flagZ = 0;
-        this.flagN = 0; 
+        this.flagN = 0;
+        this.cond = "00";
     }
 
-    // Recebe valores da ALU
-    write(z, n) {
+    // Recebe valores da ALU e MIR
+    write(z, n, cond) {
         this.flagZ = z;
         this.flagN = n;
+        this.cond = cond;
     }
 
     // Calcula o próximo endereço baseado nos bits JAM e no endereço base
-    proximoEndereco(mir) {
-        let addr = mir.nextAddress || 0;
+    read() {
+        let addr = 0;
         
-        if ((mir.jamz && this.flagZ) || (mir.jamn && this.flagN)) {
-            addr = mir.jumpAddress;
+        if (this.flagZ ||this.flagN || this.cond != "00") {
+            addr = 1;
         }
         
         return addr;
@@ -27,7 +29,8 @@ class MSL {
 
     clear() {
         this.flagZ = 0;
-        this.flagN = 0; 
+        this.flagN = 0;
+        this.cond = "00";
     }
 }
 

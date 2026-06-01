@@ -23,7 +23,7 @@ class Hardware {
         this.shifter = new Shifter();
     }
 
-    ciclo() {
+    rodarCiclo() {
         // MPC tem um endereço e busca na CS a próxima microinstrução
         const microinstrucao = this.cs.read(parseInt(this.mpc.read(), 2));
 

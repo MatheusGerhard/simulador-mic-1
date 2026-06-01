@@ -12,21 +12,9 @@ class DecoderA {
         this.data = newValue;
     }
 
-    // Mapeia o valor binário para o nome da propriedade na classe Registers
+    // Mapeia o valor e envia para A latch
     read() {
-        let value = parseInt(this.data, 2);
-        switch (value) {
-            case 0:
-                return "amux";
-            case 1:
-                return "pc";
-            case 2:
-                return "ac";
-            case 3:
-                return "sp";
-            default:
-                return "none";
-        }
+        return parseInt(this.data, 2);
     }
 }
 
