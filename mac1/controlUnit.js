@@ -41,16 +41,18 @@ class ControlUnit {
         this.msl = new MSL();
         this.regs = new Registers();
         this.shifter = new Shifter();
+
+        this.micro = null;
     }
 
     rodarCiclo(sc) {
         switch(sc) {
             case(1): // Busca microinstrução
                 const endereco = this.mpc.read();
-                const micro = this.cs.read(endereco);
-                if (!micro) return false;
+                this.micro = this.cs.read(endereco);
+                if (this.micro == null || this.micro == undefined) return false;
 
-                this.mir.write(micro);
+                this.mir.write(this.micro);
 
                 break
 
@@ -59,9 +61,9 @@ class ControlUnit {
                 this.decA.write(this.mir.read("a"));
                 this.decB.write(this.mir.read("b"));
                 this.decC.write(this.mir.read("c"));
-                
-                this.latA.write(this.regs.read(this.decA.read()));
-                this.latB.write(this.regs.read(this.decB.read()));
+
+                this.latA.write(this.regs.read(parseInt(this.decA.read(), 2)));
+                this.latB.write(this.regs.read(parseInt(this.decB.read(), 2)));
 
                 this.increm.increment();
 
@@ -71,48 +73,69 @@ class ControlUnit {
             case(3): // Envio MAR/MBR ou Calculo na ALU
                 let valA = this.latA.read();
                 let valB = this.latB.read();
+                // console.log("lA:"+valA);
+                // console.log("lB:"+valB);
+                // console.log("pc: "+this.regs.read(0));
 
                 // MAR/MBR
-                if (this.mir.read("mbr") === "1") {
-                    if (this.mir.read("rd") === "1") {
-                        const data = this.memory.read(this.mar.read());
+                if (this.mir.read("mbr") == "1") {
+                    if (this.mir.read("rd") == "1") {
+                        const data = this.memory.read(parseInt(this.mar.read(), 2));
                         this.mbr.write(data);
-                        
+                        console.log("mbr:"+this.mbr.read());
                     }
-                    if (this.mir.read("wr") === "1") {
+                    if (this.mir.read("wr") == "1") {
                         const data = this.mbr.read();
                         const marVal = this.mar.read();
                         this.memory.write(data, this.mar.read());
                     }
                 }
                 
-                if (this.mir.read("mar") === "1") {
-                    this.mar.write("mar", valB);
+                if (this.mir.read("mar") == "1") {
+                    this.mar.write(valB);
+                    console.log("mar:"+this.mar.read());
                 }
                 
 
                 // ALU/Deslocador
-                amuxVal = this.amux.select(valA, this.mbr.read(), this.mir.read("amux"));
-
-                const resALU = this.alu.calcular(amuxVal, valB, this.mir.read("alu"));
-                const resFinal = this.shifter.deslocar(resALU, this.mir.read("sh"));
+                this.amux.write(valA, this.mbr.read(), this.mir.read("amux"));
+                this.amux.select();
+                const amuxVal = this.amux.read();
                 
-                this.msl.write(this.alu.getZ(), this.alu.getN(), this.mir.read("cond"));
+                // console.log("amux: "+amuxVal);
+         
+                this.alu.write(amuxVal, valB, this.mir.read("alu"))
+                this.alu.calcular();
+                console.log("alu:"+this.alu.read("res"));
+                console.log("ir:"+this.regs.read(3));
+
+                this.shifter.write(this.alu.read("res"), this.mir.read("sh"));
+                this.shifter.deslocar();
+
+                // console.log("shi: "+this.shifter.read());
+                
+                this.msl.write(this.alu.read("Z"), this.alu.read("N"), this.mir.read("cond"));
+                this.msl.calcula();
             
                 break
 
 
             case(4): // Escrita dos resultados e Próxima instrução                
-                if (this.mir.read("enc") === "0") {
-                    this.regs.write(this.decC.read(), resFinal);
+                if (this.mir.read("enc") == "0" && this.mir.read("mbr") == "1") {
+                    this.mbr.write(this.shifter.read());
                 }
-                if (this.mir.read("enc") === "1") {
-                    this.mbr.write(resFinal);
+                if (this.mir.read("enc") == "1") {
+                    this.regs.write(parseInt(this.mir.read("c"), 2), this.shifter.read());
                 }
+                console.log("ir:"+this.regs.read(3));
 
-                incVal = this.increm.increment(this.mpc.read());
-                const mmuxVal = this.mmux.select(incVal, this.mir.read("addr"), this.msl.read());
-                this.mpc.write(mmuxVal);
+                this.increm.write(this.mpc.read())
+                this.increm.increment();
+                this.mmux.write(this.increm.read(), this.mir.read("addr"), this.msl.read());
+                this.mmux.select();
+                this.mpc.write(this.mmux.read());
+                console.log(this.mmux.read());
+                console.log("mpc:"+this.mpc.read());
 
                 break
         }

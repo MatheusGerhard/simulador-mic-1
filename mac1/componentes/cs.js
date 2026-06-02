@@ -8,59 +8,59 @@
 
 const microprograma = [];
 
-// MICROPROGRAMA DO MAC-1 (Sinais: AC=0000, IR=0001, PC=0010, SP=0011)
+// MICROPROGRAMA DO MAC-1
 
 // CICLO DE BUSCA (FETCH)
 // 0: mar:=pc; rd;
-microprograma[0] = {label: "fetch1", amux: "0", cond: "00", alu: "00", sh: "00", mbr: "0",mar: "1", rd: "1", wr:"0", enc: "0", c: "0000", b: "0000", a: "0000", addr: "00000000"};
+microprograma[0] = {label: "fetch1", amux: "0", cond: "00", alu: "10", sh: "00", mbr: "0", mar: "1", rd: "1", wr:"0", enc: "0", c: "0000", b: "0000", a: "0000", addr: "00000000"};
 
 // 1: pc:=pc + 1; rd;
-microprograma[1] = {label: "fetch2", amux: "0", cond: "00", alu: "00", sh: "00", mbr: "0",mar: "0", rd: "1", wr:"0", enc: "0", c: "0000", b: "0101", a: "0000", addr: "00000000"};
+microprograma[1] = {label: "fetch2", amux: "0", cond: "00", alu: "00", sh: "00", mbr: "0",mar: "0", rd: "1", wr:"0", enc: "1", c: "0000", b: "0000", a: "0110", addr: "00000000"};
 
 // 2: ir:=mbr; if n then goto 28;
-microprograma[2] = {label: "fetch3", amux: "0", cond: "01", alu: "00", sh: "00", mbr: "0",mar: "0", rd: "1", wr:"0", enc: "0", c: "0000", b: "0101", a: "0000", addr: "00011100"};
+microprograma[2] = {label: "fetch3", amux: "1", cond: "01", alu: "10", sh: "00", mbr: "1",mar: "0", rd: "1", wr:"0", enc: "1", c: "0011", b: "0000", a: "0000", addr: "00011100"};
 
 // 3: tir:=lshift(ir + ir); if n then goto 19;
-microprograma[3] = {label: "fetch4", amux: "0", cond: "01", alu: "00", sh: "10", mbr:"0", mar: "0", rd: "0", wr:"0", enc: "1", c: "0100", b: "0011", a: "0011", addr: "00010011"};
+microprograma[3] = {label: "fetch4", amux: "0", cond: "01", alu: "00", sh: "01", mbr:"0", mar: "0", rd: "0", wr:"0", enc: "1", c: "0100", b: "0011", a: "0011", addr: "00010011"};
 
 // 4: tir:=lshift(tir); if n then goto 11;
-microprograma[4] = {label: "fetch5", amux: "0", cond: "01", alu: "00", sh: "10", mbr:"0", mar: "0", rd: "0", wr:"0", enc: "1", c: "0100", b: "0011", a: "0011", addr: "00001011"};
+microprograma[4] = {label: "fetch5", amux: "0", cond: "01", alu: "10", sh: "10", mbr:"0", mar: "0", rd: "0", wr:"0", enc: "1", c: "0100", b: "0000", a: "0100", addr: "00001011"};
 
 // 5: alu:=tir; if n then goto 9;
-microprograma[5] = { label: "fetch6", amux: "0", cond: "01", alu: "11", sh: "00", mbr: "0", mar: "0", rd: "0", wr: "0", enc: "0", c: "0000", b: "0110", a: "0000", addr: "00001001" };
+microprograma[5] = {label: "fetch6", amux: "0", cond: "00", alu: "10", sh: "00", mbr: "0", mar: "0", rd: "0", wr: "0", enc: "0", c: "0100", b: "0000", a: "0100", addr: "00001001" };
 
 
 // LODD 0000
 // 6: mar:=ir; rd;
-microprograma[6] = { label: "lodd1", amux: "0", cond: "00", alu: "11", sh: "00", mbr: "0", mar: "1", rd: "1", wr: "0", enc: "0", c: "0000", b: "0101", a: "0000", addr: "00000000" };
+microprograma[6] = { label: "lodd1", amux: "0", cond: "00", alu: "00", sh: "00", mbr: "0", mar: "1", rd: "1", wr: "0", enc: "0", c: "0000", b: "0011", a: "0000", addr: "00000000" };
 
 // 7: rd;
-microprograma[7] = { label: "lodd2", amux: "0", cond: "00", alu: "11", sh: "00", mbr: "0", mar: "0", rd: "1", wr: "0", enc: "0", c: "0000", b: "0000", a: "0000", addr: "00000000" };
+microprograma[7] = { label: "lodd2", amux: "0", cond: "00", alu: "00", sh: "00", mbr: "0", mar: "0", rd: "1", wr: "0", enc: "0", c: "0000", b: "0000", a: "0000", addr: "00000000" };
 
 // 8: ac:=mbr; goto 0;
-microprograma[8] = { label: "lodd3", amux: "0", cond: "11", alu: "11", sh: "00", mbr: "0", mar: "0", rd: "0", wr: "0", enc: "1", c: "1000", b: "0111", a: "0000", addr: "00000000" };
+microprograma[8] = { label: "lodd3", amux: "1", cond: "11", alu: "10", sh: "00", mbr: "1", mar: "0", rd: "0", wr: "0", enc: "1", c: "0001", b: "0000", a: "0000", addr: "00000000" };
 
 
 // STOD 0001
 // 9: mar:=ir; mbr:=ac; wr;
-microprograma[9] = { label: "stod1", amux: "0", cond: "00", alu: "11", sh: "00", mbr: "0", mar: "1", rd: "0", wr: "0", enc: "0", c: "0000", b: "0101", a: "0000", addr: "00000000" };
+microprograma[9] = { label: "stod1", amux: "0", cond: "00", alu: "10", sh: "00", mbr: "1", mar: "1", rd: "0", wr: "1", enc: "0", c: "0000", b: "0011", a: "0001", addr: "00000000" };
 
 // 10: wr; goto 0;
-microprograma[10] = { label: "stod2", amux: "0", cond: "11", alu: "11", sh: "00", mbr: "1", mar: "0", rd: "0", wr: "1", enc: "0", c: "0000", b: "0010", a: "0000", addr: "00000000" };
+microprograma[10] = { label: "stod2", amux: "0", cond: "11", alu: "10", sh: "00", mbr: "1", mar: "0", rd: "0", wr: "1", enc: "0", c: "0000", b: "0010", a: "0000", addr: "00000000" };
 
 // 11: alu:=tir; if n then goto 15;
-microprograma[11] = { label: "ident001x", amux: "0", cond: "01", alu: "11", sh: "00", mbr: "0", mar: "0", rd: "0", wr: "0", enc: "0", c: "0000", b: "0110", a: "0000", addr: "00001111" };
+microprograma[11] = { label: "ident001x", amux: "0", cond: "01", alu: "10", sh: "00", mbr: "0", mar: "0", rd: "0", wr: "0", enc: "0", c: "0000", b: "0100", a: "0000", addr: "00001111" };
 
 
 // ADDD 0010
 // 12: mar:=ir; rd;
-microprograma[12] = { label: "addd1", amux: "0", cond: "00", alu: "11", sh: "00", mbr: "0", mar: "1", rd: "1", wr: "0", enc: "0", c: "0000", b: "0101", a: "0000", addr: "00000000" };
+microprograma[12] = { label: "addd1", amux: "0", cond: "00", alu: "10", sh: "00", mbr: "0", mar: "1", rd: "1", wr: "0", enc: "0", c: "0000", b: "0011", a: "0000", addr: "00000000" };
 
 // 13: rd;
 microprograma[13] = { label: "addd2", amux: "0", cond: "00", alu: "11", sh: "00", mbr: "0", mar: "0", rd: "1", wr: "0", enc: "0", c: "0000", b: "0010", a: "0000", addr: "00000000" };
 
 // 14: ac:=mbr + ac; goto 0;
-microprograma[14] = { label: "addd3", amux: "0", cond: "11", alu: "11", sh: "00", mbr: "0", mar: "0", rd: "0", wr: "0", enc: "1", c: "1000", b: "0111", a: "0000", addr: "00000000" };
+microprograma[14] = { label: "addd3", amux: "1", cond: "11", alu: "11", sh: "00", mbr: "0", mar: "0", rd: "0", wr: "0", enc: "1", c: "1000", b: "0111", a: "0000", addr: "00000000" };
 
 
 // SUBD 0011
@@ -71,7 +71,7 @@ microprograma[15] = { label: "subd1", amux: "0", cond: "00", alu: "11", sh: "00"
 microprograma[16] = { label: "subd2", amux: "0", cond: "00", alu: "11", sh: "00", mbr: "0", mar: "0", rd: "1", wr: "0", enc: "1", c: "1000", b: "0010", a: "0000", addr: "00000000" };
 
 // 17: a:=inv(mbr);
-microprograma[17] = { label: "subd3", amux: "0", cond: "00", alu: "10", sh: "00", mbr: "0", mar: "0", rd: "0", wr: "0", enc: "0", c: "0000", b: "0111", a: "0000", addr: "00000000" };
+microprograma[17] = { label: "subd3", amux: "1", cond: "00", alu: "10", sh: "00", mbr: "0", mar: "0", rd: "0", wr: "0", enc: "0", c: "0000", b: "0111", a: "0000", addr: "00000000" };
 
 // 18: ac:=ac + a; goto 0;
 microprograma[18] = { label: "subd4", amux: "0", cond: "11", alu: "11", sh: "00", mbr: "0", mar: "0", rd: "0", wr: "0", enc: "1", c: "1000", b: "0010", a: "0000", addr: "00000000" };
@@ -134,7 +134,7 @@ microprograma[32] = { label: "lodl2", amux: "0", cond: "11", alu: "11", sh: "00"
 microprograma[33] = { label: "stol1", amux: "0", cond: "00", alu: "11", sh: "00", mbr: "0", mar: "0", rd: "0", wr: "0", enc: "0", c: "0000", b: "0101", a: "0000", addr: "00000000" };
 
 // 34: mar:=a; mbr:=ac; wr; goto 10;
-microprograma[34] = { label: "stol2", amux: "0", cond: "11", alu: "11", sh: "00", mbr: "0", mar: "1", rd: "0", wr: "0", enc: "0", c: "0000", b: "0000", a: "0000", addr: "00001010" };
+microprograma[34] = { label: "stol2", amux: "0", cond: "11", alu: "11", sh: "00", mbr: "1", mar: "1", rd: "0", wr: "0", enc: "0", c: "0000", b: "0000", a: "0000", addr: "00001010" };
 
 // 35: alu:=tir; if n then goto 38;
 microprograma[35] = { label: "ident101x", amux: "0", cond: "01", alu: "11", sh: "00", mbr: "0", mar: "0", rd: "0", wr: "0", enc: "0", c: "0000", b: "0110", a: "0000", addr: "00100110" };
@@ -242,7 +242,7 @@ microprograma[62] = { label: "pop1", amux: "0", cond: "00", alu: "11", sh: "00",
 microprograma[63] = { label: "pop2", amux: "0", cond: "00", alu: "11", sh: "00", mbr: "0", mar: "0", rd: "1", wr: "0", enc: "0", c: "0000", b: "0000", a: "0000", addr: "00000000" };
 
 // 64: ac:=mbr; goto 0;
-microprograma[64] = { label: "pop3", amux: "0", cond: "11", alu: "11", sh: "00", mbr: "0", mar: "0", rd: "0", wr: "0", enc: "1", c: "1000", b: "0111", a: "0000", addr: "00000000" };
+microprograma[64] = { label: "pop3", amux: "1", cond: "11", alu: "11", sh: "00", mbr: "0", mar: "0", rd: "0", wr: "0", enc: "1", c: "1000", b: "0111", a: "0000", addr: "00000000" };
 
 // 65: tir:=lshift(tir); if n then goto 73;
 microprograma[65] = { label: "ident1111_5", amux: "0", cond: "01", alu: "11", sh: "11", mbr: "0", mar: "0", rd: "0", wr: "0", enc: "0", c: "0000", b: "0110", a: "0000", addr: "01001001" };
@@ -259,7 +259,7 @@ microprograma[67] = { label: "retn1", amux: "0", cond: "00", alu: "11", sh: "00"
 microprograma[68] = { label: "retn2", amux: "0", cond: "00", alu: "11", sh: "00", mbr: "0", mar: "0", rd: "1", wr: "0", enc: "0", c: "0000", b: "0000", a: "0000", addr: "00000000" };
 
 // 69: pc:=mbr; goto 0;
-microprograma[69] = { label: "retn3", amux: "0", cond: "11", alu: "11", sh: "00", mbr: "0", mar: "0", rd: "0", wr: "0", enc: "1", c: "0100", b: "0111", a: "0000", addr: "00000000" };
+microprograma[69] = { label: "retn3", amux: "1", cond: "11", alu: "11", sh: "00", mbr: "0", mar: "0", rd: "0", wr: "0", enc: "1", c: "0100", b: "0111", a: "0000", addr: "00000000" };
 
 
 // SWAP 1111-1010
@@ -300,7 +300,7 @@ class ControlStore {
     constructor() {
         this.rom = new Array(512).fill(null);
         for (let i = 0; i < 512; i++) {
-            if (microprograma[i] !== undefined) {
+            if (microprograma[i] != undefined) {
                 this.rom[i] = microprograma[i];
             }
         }
@@ -308,6 +308,7 @@ class ControlStore {
 
     read(endereco) {
         const microinstrucao = this.rom[endereco];
+        console.log("Achou a instrução: "+microinstrucao.label)
         if (!microinstrucao) {
             return null;
         }

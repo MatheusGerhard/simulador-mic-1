@@ -5,7 +5,7 @@
 
 class MemoryBufferRegister {
     constructor() {
-        this.value = "0000000000000000"; // Inicializa zerado (16 bits)
+        this.value = "0000000000000000";
     }
 
     // Recebe do Deslocador
@@ -13,7 +13,7 @@ class MemoryBufferRegister {
         this.value = newValue;
     }
 
-    // Envia para Amux
+    // Envia para AMUX
     read() {
         return this.value;
     }

@@ -14,7 +14,7 @@ class DecoderC {
 
     // Mapeia o valor e envia para os Registradores
     read() {
-        return parseInt(this.data, 2);
+        return this.data;
     }
 }
 

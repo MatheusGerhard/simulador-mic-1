@@ -4,7 +4,7 @@
 
 class MemoryAddressRegister {
     constructor() {
-        this.value = "0000000000000000"; // Inicializa zerado (12 bits numéricos)
+        this.value = "0000000000000000";
     }
 
     // Recebe o endereço do latchB

@@ -9,12 +9,12 @@ class MicroprogramCounter {
 
     // Recebe dado de Mmux
     write(newValue) {
-        this.value = newValue;
+        this.value = parseInt(newValue, 2);
     }
 
     // Busca na ROM a próxima microinstrução
     read() {
-        return this.value;
+        return parseInt(this.value, 10);
     }
 
     clear() {

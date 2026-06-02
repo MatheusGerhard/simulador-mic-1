@@ -22,7 +22,6 @@ class Clock {
         this.subciclo++;
         if (this.subciclo > 4) {
             this.subciclo = 1;
-            this.totalCiclos++;
         }
     }
 
