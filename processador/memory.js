@@ -11,11 +11,18 @@ class Memory {
     }
 
     read(address) {
+        address = parseInt(address,2);
         return this.data[address];
     }
 
     write(address, value) {
+        address = parseInt(address,2);
         this.data[address] = value;
+        console.log(`RAM: Escreveu ${value} no endereço ${address}`);
+    }
+    writeMontador(address, value) {
+        this.data[address] = value;
+        console.log(`RAM: Escreveu ${value} no endereço ${address}`);
     }
     clearMemory(){
         this.data = new Array(this.data.length).fill("0000000000000000");
@@ -24,7 +31,7 @@ class Memory {
     preencheInstrucoes(microinstrucoes, macroinstrucoes) {
         for (let i = 0; i < macroinstrucoes.length; i++) {
             if(macroinstrucoes[i].rotulo !=null && macroinstrucoes[i].opcode === null) break;
-            this.write(macroinstrucoes[i].rotulo_index, microinstrucoes[i]);
+            this.writeMontador(macroinstrucoes[i].rotulo_index, microinstrucoes[i]);
         }
     }
 }

@@ -1,7 +1,10 @@
 import styles from "./styles.module.css";
 import Montador from "../../../../montador/montador";
+import { useState, useEffect } from "react";
 
 export default function InstructionDisplay() {
+    
+
     function handleClick() {
         let string = document.getElementById("codigo").value;
 
@@ -21,10 +24,6 @@ export default function InstructionDisplay() {
             alert("Erro na montagem do programa. Verifique o console para mais detalhes.");
             return;
         }
-
-
-
-        
         
         montador.preencherMemoria();
 

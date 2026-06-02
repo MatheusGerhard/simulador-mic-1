@@ -11,7 +11,10 @@ import LatchA from './componentes/latchA.js';
 import LatchB from './componentes/latchB.js';
 import MAR from './componentes/mar.js';
 import MBR from './componentes/mbr.js';
-import Memory from './componentes/ram.js';
+
+//import Memory from './componentes/ram.js';
+import memoria from "../processador/memory.js";
+
 import MicroInstructionRegister from './componentes/mir.js';
 import MicroprogramCounter from './componentes/mpc.js';
 import Mmux from './componentes/mmux.js';
@@ -38,9 +41,11 @@ class ControlUnit {
         this.mmux = new Mmux();
         this.mpc = new MicroprogramCounter();
         this.msl = new MSL();
-        this.ram = new Memory();
+        this.ram = memoria;
         this.regs = new Registers();
         this.shifter = new Shifter();
+        this.tempV = "0";
+        this.tempE = "0";
 
         this.micro = null;
     }
@@ -75,25 +80,39 @@ class ControlUnit {
 
             case(3): // Envio MAR/MBR ou Calculo na ALU
 
-                // MAR/MBR
-                if (this.mir.read("mbr") == "1") {
-                    if (this.mir.read("wr") == "0") {
-                        const data = this.ram.read(parseInt(this.mar.read(), 2));
-                        this.mbr.write(data);
-                        console.log("mbr:"+this.mbr.read());
-                    }
-                    if (this.mir.read("wr") == "1") {
-                        const data = this.mbr.read();
-                        const marVal = this.mar.read();
-                        this.ram.write(data, this.mar.read());
-                        console.log("ram:"+this.ram.read(this.mar.read()));
-                    }
-                }
-                
                 if (this.mir.read("mar") == "1") {
                     this.mar.write(this.latB.read());
                     console.log("mar:"+this.mar.read());
                 }
+
+                // MAR/MBR
+                if (this.mir.read("mbr") == "1") {
+                    if (this.mir.read("wr") == "0") {
+                        const data = this.ram.read(this.mar.read());
+                        this.mbr.write(data);
+                        console.log("mbr:"+this.mbr.read());
+                    }
+                    if (this.mir.read("wr") == "1") {
+                        this.mbr.write(this.latA.read());
+                        
+                        
+                        if (this.tempV != "0"){
+                            this.ram.write(this.tempE,this.tempV);
+                            this.tempV = "0";
+                        }else if(this.tempV == "0"){
+                            this.tempV = this.mbr.read();
+                            this.tempE = this.mar.read();
+                        }
+
+                        
+                        
+                        // SET
+                        console.log("ram:"+this.ram.read(this.mar.read()));
+                        console.log("mbr:"+this.mbr.read());
+                    }
+                }
+                
+                
                 
 
                 // ALU/Deslocador
@@ -106,6 +125,7 @@ class ControlUnit {
                 console.log("alu:"+this.alu.read("res"));
                 console.log("pc:"+this.regs.read(0));
                 console.log("ir:"+this.regs.read(3));
+                console.log("ac:"+this.regs.read(1));
 
                 this.shifter.write(this.alu.read("res"), this.mir.read("sh"));
                 this.shifter.deslocar();
@@ -144,6 +164,10 @@ class ControlUnit {
         }
 
         return true;
+    }
+
+    pausarCiclo(){
+        this.clock.pausar();
     }
 }
 

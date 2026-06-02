@@ -19,10 +19,11 @@ class MSL {
 
     // Calcula o próximo endereço baseado nos bits JAM e no endereço base
     calcula() {
-        if (this.cond == "11" || this.cond == "01" && this.flagN || this.cond == "10" && this.flagZ) {
+        console.log("FLAGS - Z: "+this.flagZ+" N: "+this.flagN+" COND: "+this.cond);
+        if ((this.cond == "11") || (this.cond == "01" && this.flagN == 1) || (this.cond == "10" && this.flagZ == 1)) {
                 this.value = 1;
         }
-        else if(this.cond == "00") {
+        else{
             this.value = 0;
         }
     }

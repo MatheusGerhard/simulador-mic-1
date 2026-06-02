@@ -71,7 +71,7 @@ microprograma[15] = {label: "subd1", amux: "0", cond: "00", alu: "00", sh: "00",
 microprograma[16] = {label: "subd2", amux: "0", cond: "00", alu: "00", sh: "00", mbr: "0", mar: "0", rd: "1", wr: "0", enc: "1", c: "0001", b: "0001", a: "0110", addr: "00000000"};
 
 // 17: a:=inv(mbr);
-microprograma[17] = {label: "subd3", amux: "1", cond: "00", alu: "11", sh: "00", mbr: "1", mar: "0", rd: "0", wr: "0", enc: "0", c: "1010", b: "0000", a: "0000", addr: "00000000"};
+microprograma[17] = {label: "subd3", amux: "1", cond: "00", alu: "11", sh: "00", mbr: "1", mar: "0", rd: "0", wr: "0", enc: "1", c: "1010", b: "0000", a: "0000", addr: "00000000"};
 
 // 18: ac:=ac + a; goto 0;
 microprograma[18] = {label: "subd4", amux: "0", cond: "11", alu: "00", sh: "00", mbr: "0", mar: "0", rd: "0", wr: "0", enc: "1", c: "0001", b: "0001", a: "1010", addr: "00000000"};

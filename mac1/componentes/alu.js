@@ -23,34 +23,22 @@ class ArithmeticLogicUnit {
     }
 
     calcular() {
-        // Transforma as fiações de string em inteiros para calcular
-        const A = parseInt(this.amux, 2);
-        const B = parseInt(this.latchb, 2);
+    const A = parseInt(this.amux, 2);
+    const B = parseInt(this.latchb, 2);
 
-        switch (this.mir) {
-            case "00": // A + B
-                this.temp = A + B;
-                break;
-            case "01": // A AND B
-                this.temp = A & B;
-                break;
-            case "10": // A
-                this.temp = A;
-                break;
-            case "11": // INV(A)
-                this.temp = (~A) + 1;
-                break;
-            default:
-                this.temp = 0;
-        }
-
-        // Converte o para String
-        this.res = this.temp.toString(2).padStart(16, "0");
-
-        // Atualização das Flags de Status 
-        this.Z = (this.res == "0000000000000000") ? 1 : 0;
-        this.N = (this.res[0] == "1") ? 1 : 0;
+    switch (this.mir) {
+        case "00": this.temp = (A + B) & 0xFFFF;  break; // A + B
+        case "01": this.temp = (A & B) & 0xFFFF;  break; // A AND B
+        case "10": this.temp = A & 0xFFFF;         break; // A
+        case "11": this.temp = (~A) & 0xFFFF;  break; // NEG(A) em C2
     }
+
+    this.res = this.temp.toString(2).padStart(16, "0");
+
+    this.Z = (this.temp === 0) ? 1 : 0;
+    // Bit mais significativo indica negativo em C2
+    this.N = (this.temp & 0x8000) ? 1 : 0;
+}
 
     // Envia para o Deslocador ou MSL
     read(regName) {
