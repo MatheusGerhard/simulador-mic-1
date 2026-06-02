@@ -1,8 +1,32 @@
-.container{
-    position: fixed;
-    right: 24px;
-    bottom: 90px;
+.memory{
     display: flex;
-    flex-direction: row-reverse;
-    gap: 2rem;
+    flex-direction: column;
+    padding: 0.5rem;
+    gap: 0.5rem;
+}
+
+.container{
+    display: flex;
+    width: fit-content;
+    gap: 0.5rem;
+    max-width: 572px;
+    flex-wrap: wrap;
+}
+
+.button{
+    border: none;
+    cursor: pointer;
+    background-color: var(--text-secondary);
+    border-radius: 8px;
+    border: solid 1px #ffffff;
+    height: 50px;
+    width: 50px;
+    box-shadow: 0 8px 10px rgba(0, 0, 0, 0.25);
+}
+
+.buttonText{
+    font-size: 28px;
+    font-family: 'Roboto', sans-serif;
+    color: white;
+    font-style: bold;
 }

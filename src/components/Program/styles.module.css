@@ -1,0 +1,9 @@
+.container{
+    position: fixed;
+    right: 24px;
+    bottom: 90px;
+    display: flex;
+    gap: 2rem;
+    height: 40vh;
+    width: 200px;
+}
