@@ -17,6 +17,9 @@ class Memory {
     write(address, value) {
         this.data[address] = value;
     }
+    clearMemory(){
+        this.data = new Array(this.data.length).fill("0000000000000000");
+    }
 
     preencheInstrucoes(microinstrucoes, macroinstrucoes) {
         for (let i = 0; i < macroinstrucoes.length; i++) {

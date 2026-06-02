@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import MemoryDisplay from './memoryDisplay';
 import styles from './styles.module.css'   
+import memoria from '../../../processador/memory';
 
 export default function Memory() {
     const [memoryNum, setMemoryNum] = useState(1);
@@ -17,10 +18,17 @@ export default function Memory() {
         }
     }
 
+    function clearMemory(){
+        memoria.clearMemory();
+    }
+
     return (
         <div className={styles.memory}>
             <button className={styles.button} onClick={addMemory}>
                 <h1 className={styles.buttonText}>+</h1>
+            </button>
+            <button className={styles.button} onClick={clearMemory }>
+                <h1 className={styles.buttonText}>/</h1>
             </button>
             <div className={styles.container}>
                 {Array.from({ length: memoryNum }).map((_, index) => (
