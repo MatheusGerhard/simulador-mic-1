@@ -20,6 +20,7 @@ class Memory {
 
     preencheInstrucoes(microinstrucoes, macroinstrucoes) {
         for (let i = 0; i < macroinstrucoes.length; i++) {
+            if(macroinstrucoes[i].rotulo !=null && macroinstrucoes[i].opcode === null) break;
             this.write(macroinstrucoes[i].rotulo_index, microinstrucoes[i]);
         }
     }

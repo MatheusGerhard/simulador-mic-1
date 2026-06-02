@@ -7,9 +7,28 @@ export default function InstructionDisplay() {
 
         let montador = new Montador(string);
 
-        montador.main();
+        let result = montador.main();
+        
+        if (result != null) {
+
+            if (result) {
+                
+                alert(result);
+                return;
+            }
+            
+        }else if(result === null){
+            alert("Erro na montagem do programa. Verifique o console para mais detalhes.");
+            return;
+        }
+
+
+
+        
+        
         montador.preencherMemoria();
-        console.log(montador.macroinstrucoes);
+
+        
     }
     return (
         <div className={styles.instructions}>
