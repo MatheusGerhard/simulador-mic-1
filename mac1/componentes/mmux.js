@@ -21,7 +21,6 @@ class Mmux {
     select() {
         if (this.mslSignal == 1) {
             this.value = this.mirAddr;
-            console.log("mmux"+this.mslSignal);
         }
         else {
             this.value = this.incrementedAddr;

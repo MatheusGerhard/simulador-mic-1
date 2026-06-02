@@ -22,6 +22,7 @@ class Clock {
         this.subciclo++;
         if (this.subciclo > 4) {
             this.subciclo = 1;
+            this.totalCiclos++;
         }
     }
 
@@ -43,6 +44,8 @@ class Clock {
             return;
         }
         
+        if (this.subciclo == 1) console.log("=============== "+this.totalCiclos+" ===============");
+        console.log("-------------- "+this.subciclo+" --------------");
         this.subPulso(controlUnit);
         
     }, this.intervaloMs);

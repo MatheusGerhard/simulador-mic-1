@@ -49,7 +49,7 @@ class ArithmeticLogicUnit {
 
         // Atualização das Flags de Status 
         this.Z = (this.res == "0000000000000000") ? 1 : 0;
-        this.N = (this.res[0] == 1) ? 1 : 0;
+        this.N = (this.res[0] == "1") ? 1 : 0;
     }
 
     // Envia para o Deslocador ou MSL

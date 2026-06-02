@@ -14,7 +14,7 @@ class DecoderB {
 
     // Mapeia o valor e envia para B latch
     read() {
-        return this.data;
+        return parseInt(this.data, 2);
     }
 }
 
