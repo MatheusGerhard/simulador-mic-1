@@ -1,7 +1,4 @@
-// Clock - Relógio
-
-// Descrição: Determina o ritmo de execução de cada microinstrução.
-// Envia: Pulsos (ticks) para a Unidade de Controle e demais componentes sincronizados.
+// Clock.js
 
 class Clock {
     constructor() {
@@ -10,45 +7,50 @@ class Clock {
         this.intervaloMs = 1000;
         this.emExecucao = false;
         this.timerId = null;
+        
+        
     }
 
     
+
     setVelocidade(ms) {
         this.intervaloMs = ms;
     }
 
     subPulso(controlUnit) {
-        controlUnit.rodarCiclo(this.subciclo);        
+        controlUnit.rodarCiclo(this.subciclo,this.totalCiclos);        
         this.subciclo++;
         if (this.subciclo > 4) {
             this.subciclo = 1;
             this.totalCiclos++;
+            
         }
+        
     }
 
     pulso(controlUnit) {
         for (let i = 1; i <= 4; i++) {
             this.subPulso(controlUnit);
         }
-        this.totalCiclos++;
+        // Atualiza a interface caso seja um pulso manual inteiro
+        if (this.onCicloChange) this.onCicloChange(this.totalCiclos);
     }
 
-    // Liga o processador em modo contínuo
     iniciar(controlUnit) {
         if (this.emExecucao) return;
         this.emExecucao = true;
 
         this.timerId = setInterval(() => {
-        if (!this.emExecucao) {
-            clearInterval(this.timerId);
-            return;
-        }
-        
-        if (this.subciclo == 1) console.log("=============== "+this.totalCiclos+" ===============");
-        console.log("-------------- "+this.subciclo+" --------------");
-        this.subPulso(controlUnit);
-        
-    }, this.intervaloMs);
+            if (!this.emExecucao) {
+                clearInterval(this.timerId);
+                return;
+            }
+            
+            if (this.subciclo == 1) console.log("=============== "+this.totalCiclos+" ===============");
+            console.log("-------------- "+this.subciclo+" --------------");
+            this.subPulso(controlUnit);
+            
+        }, this.intervaloMs);
     }
 
     pausar() {
@@ -62,6 +64,7 @@ class Clock {
     getCycles() {
         return this.totalCiclos;
     }
+    
     getSC() {
         return this.subciclo;
     }
@@ -69,14 +72,16 @@ class Clock {
     reset() {
         this.pausar();
         this.totalCiclos = 0;
+        if (this.onCicloChange) this.onCicloChange(this.totalCiclos); // Zera a tela também
     }
 
     resetClock() {      
-    this.subciclo = 1;
-    this.totalCiclos = 0;
-    this.emExecucao = false;
-    this.timerId = null;
-}
+        this.subciclo = 1;
+        this.totalCiclos = 0;
+        this.emExecucao = false;
+        this.timerId = null;
+        if (this.onCicloChange) this.onCicloChange(this.totalCiclos);
+    }
 }
 
 export default Clock;

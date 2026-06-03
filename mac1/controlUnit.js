@@ -46,11 +46,11 @@ class ControlUnit {
         this.shifter = new Shifter();
         this.tempV = "0";
         this.tempE = "0";
-
+        this.onEstadoChange = null;
         this.micro = null;
     }
 
-    rodarCiclo(sc) {
+    rodarCiclo(sc,ciclos) {
         switch(sc) {
             case(1): // Busca microinstrução
                 const endereco = this.mpc.read();
@@ -162,6 +162,11 @@ class ControlUnit {
 
                 break
         }
+        
+        if (this.onEstadoChange) {
+            this.onEstadoChange(this.getEstado(sc,ciclos));
+        }
+
 
         return true;
     }
@@ -192,6 +197,36 @@ class ControlUnit {
         this.tempE = "0";
         this.micro = null;
         
+    }
+
+    // Funções de integração com a interface (React)
+    setCallback(callback) {
+        this.onEstadoChange = callback;
+    }
+
+    // Método que monta o snapshot completo do estado atual
+    getEstado(sc,ciclos) {
+        return {
+            subciclo:  sc,
+            ciclos:    ciclos,
+            mir:       this.mir.label,
+            mpc:       this.mpc.read(),
+            mar:       this.mar.read(),
+            mbr:       this.mbr.read(),
+            aluRes:    this.alu.read("res"),
+            aluZ:      this.alu.read("Z"),
+            aluN:      this.alu.read("N"),
+            latA:      this.latA.read(),
+            latB:      this.latB.read(),
+            amux:      this.amux.read(),
+            shifter:   this.shifter.read(),
+            mmux:      this.mmux.read(),
+            msl:       this.msl.read(),
+            pc:        this.regs.read(0),
+            ac:        this.regs.read(1),
+            ir:        this.regs.read(3),
+            tir:       this.regs.read(4),
+        };
     }
 }
 
