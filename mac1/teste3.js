@@ -13,7 +13,6 @@ const uc = new ControlUnit();
 
 // Configura PC inicial
 function executa(clock, uc){
-    uc.regs.write(0, "0000000000000000"); // PC = 0
 
     // Ajusta velocidade para visualização dos ciclos
     clock.setVelocidade(250); 
@@ -21,9 +20,6 @@ function executa(clock, uc){
     clock.iniciar(uc);
 }
 
-function pausa(clock){
-    clock.pausar();
-}
 
 export {uc};
 export default clock;

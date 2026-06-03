@@ -25,8 +25,18 @@ export default function Memory() {
         });
     }
 
+
+ 
+    function resetComponents(){
+        uc.reset();
+        clock.resetClock();
+
+    }
+
+
     function clearMemory() {
         memoria.clearMemory();
+        resetComponents();
     }
 
     function initProgram() {
@@ -45,10 +55,10 @@ export default function Memory() {
                 <div className={styles.division}></div>
                 <div className={styles.container}>
                     <button className={styles.button} onClick={clearMemory}>
-                        <h1 className={styles.buttonText}>/</h1>
+                        <h1 className={styles.buttonText}>Clear</h1>
                     </button>
                     <button className={styles.button} onClick={initProgram}>
-                        <h1 className={styles.buttonText}>Init</h1>
+                        <h1 className={styles.buttonText}>►</h1>
                     </button>
                     <button className={styles.button} onClick={pauseProgram}>
                         <h1 className={styles.buttonText}>| |</h1>

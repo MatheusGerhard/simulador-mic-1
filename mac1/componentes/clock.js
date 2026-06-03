@@ -70,6 +70,13 @@ class Clock {
         this.pausar();
         this.totalCiclos = 0;
     }
+
+    resetClock() {      
+    this.subciclo = 1;
+    this.totalCiclos = 0;
+    this.emExecucao = false;
+    this.timerId = null;
+}
 }
 
 export default Clock;

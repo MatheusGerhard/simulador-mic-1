@@ -169,6 +169,30 @@ class ControlUnit {
     pausarCiclo(){
         this.clock.pausar();
     }
+
+    reset() {
+        this.alu = new ArithmeticLogicUnit();
+        this.amux = new Amux();
+        this.cs = new ControlStore();
+        this.increm = new Increment();
+        this.decC = new DecoderC();
+        this.decB = new DecoderB();
+        this.decA = new DecoderA();
+        this.latA = new LatchA();
+        this.latB = new LatchB();
+        this.mar = new MAR();
+        this.mbr = new MBR();
+        this.mir = new MicroInstructionRegister();
+        this.mmux = new Mmux();
+        this.mpc = new MicroprogramCounter();
+        this.msl = new MSL();
+        this.regs = new Registers();
+        this.shifter = new Shifter();
+        this.tempV = "0";
+        this.tempE = "0";
+        this.micro = null;
+        
+    }
 }
 
 export default ControlUnit;
