@@ -61,7 +61,7 @@ export default function Memory() {
                         <h1 className={styles.buttonText}>►</h1>
                     </button>
                     <button className={styles.button} onClick={pauseProgram}>
-                        <h1 className={styles.buttonText}>| |</h1>
+                        <h1 className={styles.buttonText}>||</h1>
                     </button>
                 </div>
                 <div className={styles.division}></div>
