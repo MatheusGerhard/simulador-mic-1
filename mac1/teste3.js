@@ -14,8 +14,6 @@ const uc = new ControlUnit();
 // Configura PC inicial
 function executa(clock, uc){
 
-    // Ajusta velocidade para visualização dos ciclos
-    clock.setVelocidade(250); 
 
     clock.iniciar(uc);
 }

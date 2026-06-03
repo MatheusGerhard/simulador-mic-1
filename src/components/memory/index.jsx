@@ -63,6 +63,10 @@ export default function Memory() {
                     <button className={styles.button} onClick={pauseProgram}>
                         <h1 className={styles.buttonText}>||</h1>
                     </button>
+                    <input placeholder="Tempo (ms)" type="number" min="0" className={styles.timeInput} id="time"></input>
+                    <button className={styles.button} onClick={() => clock.setVelocidade(document.getElementById("time").value)}>
+                        <h1 className={styles.buttonText}>Set Clock</h1>
+                    </button>
                 </div>
                 <div className={styles.division}></div>
                 <div className={styles.container}>
