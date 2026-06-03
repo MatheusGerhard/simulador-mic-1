@@ -2,16 +2,14 @@
 
 .memory {
     width: 100%;
+    height: 100%;
     max-width: 420px;
     background: #f8fafc;
     border: 1px solid #1d1d1d;
-    border-radius: 18px;
+    border-radius: 8px;
     box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
     overflow: hidden;
     font-family: 'Roboto', sans-serif;
-    width: 280px;
-    position: relative;
-
     background-color: #252526;
 }
 
@@ -33,7 +31,7 @@
 
 .title {
     color: #ffffff;
-    font-size: 1.35rem;
+    font-size: 1vw;
     font-weight: 700;
     letter-spacing: 0.04em;
     text-transform: uppercase;
@@ -53,7 +51,7 @@
 }
 
 .container {
-    max-height: 520px;
+    height: 84%;
     overflow-y: auto;
     padding: 10px 0;
     display: flex;
@@ -62,8 +60,8 @@
 }
 
 .adress {
-    display: grid;
-    grid-template-columns: 70px 1fr;
+    display: flex;
+    justify-content: space-between;
     align-items: center;
     padding: 12px 22px;
     transition: background-color 0.2s ease;
@@ -75,14 +73,14 @@
 
 .index {
     color: #9e9e9e;
-    font-size: 1.2rem;
+    font-size: 0.75vw;
     font-weight: 600;
     font-family: 'Roboto Mono', monospace;
 }
 
 .value {
     color: #9e9e9e;
-    font-size: 1.2rem;
+    font-size: 0.75vw;
     font-weight: 500;
     font-family: 'Roboto Mono', monospace;
     text-align: right;

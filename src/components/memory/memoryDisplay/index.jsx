@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import memoria from "../../../../processador/memory";
 import styles from './styles.module.css';
 
-export default function MemoryDisplay({ onAddMemory, close }) {
+export default function MemoryDisplay({ id, close }) {
     const [data, setData] = useState(memoria.data);
     const [visibleLines, setVisibleLines] = useState(100);
     const [isBinary, setIsBinary] = useState(true);
@@ -55,7 +55,7 @@ export default function MemoryDisplay({ onAddMemory, close }) {
     return (
         <div className={styles.memory}>
             <div className={styles.header}>
-                <button className={styles.button} onClick={close}>
+                <button className={styles.button} onClick={() => close(id)}>
                     <h1 className={styles.buttonText}>×</h1>
                 </button>
                 <div className={styles.title}>
