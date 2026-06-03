@@ -35,18 +35,20 @@ export default function Memory() {
 
     return (
         <div className={styles.memory}>
-            <button className={styles.button} onClick={addMemory}>
-                <h1 className={styles.buttonText}>+</h1>
-            </button>
-            <button className={styles.button} onClick={clearMemory }>
-                <h1 className={styles.buttonText}>/</h1>
-            </button>
-            <button className={styles.button} onClick={initProgram}>
-                <h1 className={styles.buttonText}>Init</h1>
-            </button>
-            <button className={styles.button} onClick={pauseProgram}>
-                <h1 className={styles.buttonText}>| |</h1>
-            </button>
+            <div className={styles.container}>
+                <button className={styles.button} onClick={addMemory}>
+                    <h1 className={styles.buttonText}>+</h1>
+                </button>
+                <button className={styles.button} onClick={clearMemory }>
+                    <h1 className={styles.buttonText}>/</h1>
+                </button>
+                <button className={styles.button} onClick={initProgram}>
+                    <h1 className={styles.buttonText}>Init</h1>
+                </button>
+                <button className={styles.button} onClick={pauseProgram}>
+                    <h1 className={styles.buttonText}>| |</h1>
+                </button>
+            </div>
             <div className={styles.container}>
                 {Array.from({ length: memoryNum }).map((_, index) => (
                         <MemoryDisplay
