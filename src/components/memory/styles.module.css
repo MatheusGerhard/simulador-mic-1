@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap');
+
 .memory{
     display: flex;
     flex-direction: column;
@@ -22,7 +24,7 @@
 }
 
 .title{
-    font-family: "Roboto";
+    font-family: 'Roboto Mono', monospace;
     font-size: xx-large;
     color: white;
     background-color: var(--blue-700);
@@ -69,7 +71,7 @@
     border-radius: 8px;
     border: solid 1px var(--gray-900);
     height: 50px;
-    width: 50px;
+    min-width: 50px;
     box-shadow: 0 8px 10px rgba(0, 0, 0, 0.25);
 }
 
@@ -89,8 +91,8 @@
 }
 
 .buttonText{
-    font-size: 28px;
-    font-family: 'Roboto', sans-serif;
+    font-size: 20px;
+    font-family: 'Roboto Mono', monospace;
     color: white;
     font-style: bold;
 }
