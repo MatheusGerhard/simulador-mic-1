@@ -1,12 +1,18 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap');
 
-main{
-    flex: 1;
-    background-color: #00274f;
+body{
+    background: linear-gradient(
+    180deg,
+    #e8edf3,
+    #dbe3ec
+    );
 }
 
-body{
-    background-color: #6b6b6b;
+main{
+    flex: 1;
+    padding: 0.75rem;
+    display: flex;
+    justify-content: space-around;
 }
 
 :root {

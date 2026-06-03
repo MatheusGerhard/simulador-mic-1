@@ -1,0 +1,57 @@
+.simulation{
+    border: 1px solid var(--gray-600);
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.4);
+    width: 60vw;
+    height: 40vw;
+    position: relative;
+}
+
+.componente1{
+    height: 15%;
+    width: 20%;
+    position: absolute;
+    background-color: rgb(43, 76, 226);
+    left: 30%;
+    top: 75%;
+    border-radius: 5px;
+}
+
+.componente2{
+    height: 30%;
+    width: 20%;
+    position: absolute;
+    background-color: rgb(226, 43, 217);
+    left: 40%;
+    top: 25%;
+    border-radius: 5px;
+}
+
+.componente3{
+    height: 30%;
+    width: 10%;
+    position: absolute;
+    background-color: rgb(86, 226, 43);
+    left: 10%;
+    top: 15%;
+    border-radius: 5px;
+}
+
+.componente4{
+    height: 20%;
+    width: 10%;
+    position: absolute;
+    background-color: rgb(226, 43, 43);
+    left: 80%;
+    top: 55%;
+    border-radius: 5px;
+}
+
+.componente5{
+    height: 8%;
+    width: 10%;
+    position: absolute;
+    background-color: rgb(226, 212, 20);
+    left: 80%;
+    top: 15%;
+    border-radius: 5px;
+}

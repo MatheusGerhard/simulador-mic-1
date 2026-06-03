@@ -1,15 +1,19 @@
 import './App.css'
 import Header from './components/Header';
+import Instructions from './components/instructions';
 import Memory from './components/memory';
-import Program from './components/Program';
+import Simulation from './components/SImulation';
 
 export default function App() {
 
   return (
     <>
       <Header/>
-      <Program/>
-      <Memory/>
+      <main>
+        <Memory/>
+        <Simulation/>
+        <Instructions/>
+      </main>
     </>
   )
 }
