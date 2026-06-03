@@ -3,7 +3,10 @@
     flex-direction: column;
     padding: 0.5rem;
     gap: 0.5rem;
-    width: 572px;
+    width: 31vw;
+    min-height: 660px;
+    border: 1px solid var(--gray-600);
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.4);
 }
 
 .container{

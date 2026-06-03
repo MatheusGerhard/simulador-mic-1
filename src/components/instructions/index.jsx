@@ -3,7 +3,7 @@ import styles from './styles.module.css'
 import InstructionButton from './instructionButton';
 import InstructionDisplay from './instructionDisplay';
 
-export default function Program() {
+export default function Instructions() {
     const [isOpen, setIsOpen] = useState(false);
 
     function toggleWindow() {
