@@ -4,6 +4,7 @@
 
 class MSL {
     constructor() {
+        this.value = 0;
         this.flagZ = 0;
         this.flagN = 0;
         this.cond = "00";
@@ -17,15 +18,21 @@ class MSL {
     }
 
     // Calcula o próximo endereço baseado nos bits JAM e no endereço base
-    read() {
-        let addr = 0;
-        
-        if (this.flagZ ||this.flagN || this.cond != "00") {
-            addr = 1;
+    calcula() {
+        console.log("FLAGS - Z: "+this.flagZ+" N: "+this.flagN+" COND: "+this.cond);
+        if ((this.cond == "11") || (this.cond == "01" && this.flagN == 1) || (this.cond == "10" && this.flagZ == 1)) {
+                this.value = 1;
         }
-        
-        return addr;
+        else{
+            this.value = 0;
+        }
     }
+
+    // Envia para MMUX
+    read() {
+        return this.value;
+    }
+
 
     clear() {
         this.flagZ = 0;

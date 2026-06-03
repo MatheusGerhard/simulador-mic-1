@@ -7,51 +7,42 @@
 
 class ArithmeticLogicUnit {
     constructor() {
+        this.amux = "0000000000000000";
+        this.latchb = "0000000000000000";
+        this.mir = "00";
+        this.temp = 0;
+        this.res = "0000000000000000";
         this.Z = 0; // 1 se o resultado for zero
         this.N = 0; // 1 se o resultado for negativo
     }
 
-    calcular(amux, latchb, mir) {
-        // Transforma as fiações de string em inteiros para calcular
-        const A = parseInt(amux, 2);
-        const B = parseInt(latchb, 2);
-        
-        let resultado = 0;
-
-        switch (mir) {
-            case "00": // A AND B
-                resultado = A & B;
-                break;
-            case "01": // A OR B
-                resultado = A | B;
-                break;
-            case "10": // NOT B
-                resultado = ~B;
-                break;
-            case "11": // ADD
-                resultado = A + B;
-                break;
-            default:
-                resultado = 0;
-        }
-
-        // Truncamento de 16 bits
-        resultado = resultado & 0xFFFF;
-
-        // Atualização das Flags de Status 
-        this.Z = (resultado === 0) ? 1 : 0;
-        this.N = ((resultado & 0x8000) !== 0) ? 1 : 0;
-
-        // Converte o para String
-        return resultado.toString(2).padStart(16, "0");
+    write(amux, latchb, mir) {
+        this.amux = amux;
+        this.latchb = latchb;
+        this.mir = mir;
     }
 
-    // Envia para o MSL
-    getZ() {
-        return this.Z;
+    calcular() {
+    const A = parseInt(this.amux, 2);
+    const B = parseInt(this.latchb, 2);
+
+    switch (this.mir) {
+        case "00": this.temp = (A + B) & 0xFFFF;  break; // A + B
+        case "01": this.temp = (A & B) & 0xFFFF;  break; // A AND B
+        case "10": this.temp = A & 0xFFFF;         break; // A
+        case "11": this.temp = (~A) & 0xFFFF;  break; // NEG(A) em C2
     }
-    getN() {
-        return this.N;
+
+    this.res = this.temp.toString(2).padStart(16, "0");
+
+    this.Z = (this.temp === 0) ? 1 : 0;
+    // Bit mais significativo indica negativo em C2
+    this.N = (this.temp & 0x8000) ? 1 : 0;
+}
+
+    // Envia para o Deslocador ou MSL
+    read(regName) {
+        return this[regName];
     }
 }
 

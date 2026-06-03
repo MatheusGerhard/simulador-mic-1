@@ -5,30 +5,40 @@
 
 class Shifter {
     constructor() {
-        this.msb = "0";
+        this.value = "0000000000000000";
+        this.mir = "00";
     }
 
-    deslocar(valorULA, mir) {
-        switch (mir) {
+    write(newValue, mir) {
+        this.value = newValue;
+        this.mir = mir;
+    }
+
+    deslocar() {
+        switch (this.mir) {
             case "00":
-                return valorULA;
+                this.value = this.value;
+                break
 
-            case "01": // SRA1 (Shift Right Arithmetic 1)
-                return valorULA[0] + valorULA.slice(0, 15);
+            case "01": // LSHIFT (Logical Shift Left 1)
+                this.value = this.value.slice(1) + "0";
+                break
 
-            case "10": // SLL8 (Shift Left Logical 8)
-                return valorULA.slice(8).padEnd(16, "0");
+            case "10": // SRA1 (Shift Right Arithmetic 1)
+                this.value = this.value[0] + this.value.slice(0, 15);
+                break
 
-            case "11": // Exemplo: LSHIFT (Logical Shift Left 1)
-                // 1. O bit que "cai" à esquerda vira a flag N para a ControlUnit
-                this.msb = valorULA[0];
-                // 2. Desloca 1 para a esquerda, descarta o MSB e injeta 0 na direita
-                return valorULA.slice(1) + "0";
-
+            case "11": // SLL8 (Shift Left Logical 8)
+                this.value = this.value.slice(8).padEnd(16, "0");
+                break
 
             default:
-                return valorULA;
+                this.value = this.value;
         }
+    }
+
+    read() {
+        return this.value;
     }
 }
 

@@ -4,12 +4,12 @@
 
 class MemoryAddressRegister {
     constructor() {
-        this.value = "0000000000000000"; // Inicializa zerado (12 bits numéricos)
+        this.value = "000000000000";
     }
 
     // Recebe o endereço do latchB
     write(newValue) {
-        this.value = newValue;
+        this.value = newValue.substring(4); // Considera apenas os 12 bits menos significativos
     }
 
     // Usado pela Memória RAM para saber qual endereço ler/escrever
@@ -18,7 +18,7 @@ class MemoryAddressRegister {
     }    
 
     clear() {
-        this.value = "0000000000000000";
+        this.value = "000000000000";
     }
 }
 

@@ -12,7 +12,7 @@ class latchA {
         this.value = newValue;
     }
 
-    // Envia a ULA
+    // Envia para AMUX
     read() {
         return this.value;
     }   

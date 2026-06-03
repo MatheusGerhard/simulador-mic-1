@@ -12,7 +12,7 @@ class latchB {
         this.value = newValue;
     }
 
-    // Envia a ULA
+    // Envia para ULA
     read() {
         return this.value;
     }   

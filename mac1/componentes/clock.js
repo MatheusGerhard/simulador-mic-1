@@ -44,6 +44,8 @@ class Clock {
             return;
         }
         
+        if (this.subciclo == 1) console.log("=============== "+this.totalCiclos+" ===============");
+        console.log("-------------- "+this.subciclo+" --------------");
         this.subPulso(controlUnit);
         
     }, this.intervaloMs);

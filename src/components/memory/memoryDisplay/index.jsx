@@ -3,7 +3,7 @@ import memoria from "../../../../processador/memory";
 import styles from './styles.module.css';
 
 export default function MemoryDisplay({ onAddMemory, close }) {
-    const [, forceUpdate] = useState(0);
+    const [data, setData] = useState(memoria.data);
     const [visibleLines, setVisibleLines] = useState(100);
     const [isBinary, setIsBinary] = useState(true);
     const [isSettingOpen, setIsSettingOpen] = useState(false);
@@ -11,12 +11,11 @@ export default function MemoryDisplay({ onAddMemory, close }) {
     const lineRefs = useRef([]);
 
     useEffect(() => {
-        const interval = setInterval(() => {
-            forceUpdate((v) => v + 10);
-        }, 100);
-
-        return () => clearInterval(interval);
-    }, []);
+    const interval = setInterval(() => {
+        setData([...memoria.data]); // cópia nova do array a cada 100ms
+    }, 100);
+    return () => clearInterval(interval);
+}, []);
 
     function changeBase() {
         setIsBinary(current => !current);
@@ -39,7 +38,7 @@ export default function MemoryDisplay({ onAddMemory, close }) {
     function searchLine() {
         const lineNumber = Number(line);
 
-        if (Number.isNaN(lineNumber) || lineNumber < 0 || lineNumber >= memoria.data.length) {
+        if (Number.isNaN(lineNumber) || lineNumber < 0 || lineNumber >= data.length) {
             return;
         }
 
@@ -77,7 +76,7 @@ export default function MemoryDisplay({ onAddMemory, close }) {
             </div>
             <div className={styles.container}>
                 {
-                    memoria.data.slice(0, visibleLines).map((value, index) => (
+                    data.slice(0, visibleLines).map((value, index) => (
                         <div key={index} ref={(element) => lineRefs.current[index] = element}>
                             <div className={styles.adress}>
                                 <div className={styles.index}>
@@ -100,7 +99,7 @@ export default function MemoryDisplay({ onAddMemory, close }) {
                     className={styles.searchLine}
                     type="number"
                     min="0"
-                    max={memoria.data.length - 1}
+                    max={data.length - 1}
                     value={line}
                     onChange={(e) => setLine(e.target.value)}
                 />
