@@ -1,57 +1,112 @@
-.simulation{
+.simulation {
     border: 1px solid var(--gray-600);
     box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.4);
     width: 60vw;
     height: 40vw;
     position: relative;
+    /* Adicionando flex para organizar os componentes soltos dentro da simulação */
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px; 
+    padding: 20px;
+    align-content: flex-start;
 }
 
-.componente1{
-    height: 15%;
-    width: 20%;
-    position: absolute;
-    background-color: rgb(43, 76, 226);
-    left: 30%;
-    top: 75%;
-    border-radius: 5px;
+.componente {
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+    min-width: 120px;
+    width: fit-content;
+    background-color: white;
+    /* Borda arredondada estilo "pílula" */
+    border-radius: 25px; 
+    /* Esconde o que passar da borda, aplicando o arredondamento ao header automaticamente */
+    overflow: hidden; 
+    /* Borda e sombra sutis para destacar do fundo */
+    border: 1px solid #333; 
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
 }
 
-.componente2{
-    height: 30%;
-    width: 20%;
-    position: absolute;
-    background-color: rgb(226, 43, 217);
-    left: 40%;
-    top: 25%;
-    border-radius: 5px;
+.label {
+    background-color: #333;
+    color: white;
+    /* Efeito de sombra laranja claro que aparece no texto "Shifter" na sua imagem */
+    text-shadow: 1px 1px 2px #d97706; 
+    font-size: 0.4rem;
+    font-weight: bold;
+    text-align: center;
+    padding: 8px 15px;
+    border-bottom: 1px solid #222;
 }
 
-.componente3{
-    height: 30%;
-    width: 10%;
-    position: absolute;
-    background-color: rgb(86, 226, 43);
-    left: 10%;
-    top: 15%;
-    border-radius: 5px;
+.value {
+    color: black;
+    background-color: white;
+    font-size: 0.8rem;
+    text-align: center;
+    padding: 8px 15px;
+    /* Fonte com serifa para imitar os zeros da sua imagem */
+    font-family: 'Times New Roman', Times, serif; 
+    letter-spacing: 1px;
 }
 
-.componente4{
-    height: 20%;
-    width: 10%;
-    position: absolute;
-    background-color: rgb(226, 43, 43);
-    left: 80%;
-    top: 55%;
-    border-radius: 5px;
+/* Container do Banco */
+.banco {
+    border: 2px solid #555;
+    background-color: #101010; /* Fundo levemente cinza para agrupar visualmente */
+    border-radius: 12px;
+    
+    width: fit-content;
 }
 
-.componente5{
-    height: 8%;
-    width: 10%;
-    position: absolute;
-    background-color: rgb(226, 212, 20);
-    left: 80%;
-    top: 15%;
-    border-radius: 5px;
+/* Parte do banco de registradores */
+
+.tituloBanco {
+    text-align: center;
+    color: #ffffff;
+    background-color: #222;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin-bottom: 5px;
+    font-size: 0.8rem;
+    font-family: sans-serif;
+    border-radius: 12px;
+}
+
+/* Matriz 4x4 */
+.registradoresGrid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    
+}
+
+/* O item individual (substituindo a necessidade do componente extra) */
+.regItem {
+    display: flex;
+    flex-direction: column;
+    width: 120px; /* Largura fixa para manter a grade uniforme */
+    background-color: white;
+    border-radius: 15px;
+    overflow: hidden;
+    border: 1px solid #333;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.regLabel {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    font-weight: bold;
+    font-size: 0.4rem;
+    padding: 2px 0;
+    border-bottom: 1px solid #222;
+}
+
+.regValue {
+    color: black;
+    text-align: center;
+    font-size: 0.8rem;
+    padding: 4px 0;
+    font-family: 'Times New Roman', Times, serif; /* Mantém o estilo dos números */
 }

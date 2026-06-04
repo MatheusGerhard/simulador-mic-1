@@ -224,8 +224,23 @@ class ControlUnit {
             msl:       this.msl.read(),
             pc:        this.regs.read(0),
             ac:        this.regs.read(1),
+            sp:         this.regs.read(2),
             ir:        this.regs.read(3),
             tir:       this.regs.read(4),
+            zero:      this.regs.read(5),
+            um:        this.regs.read(6),
+            menosUm:   this.regs.read(7),
+            am:        this.regs.read(8),
+            sm:        this.regs.read(9),
+            regA:      this.regs.read(10),
+            regB:      this.regs.read(11),
+            regC:      this.regs.read(12),
+            regD:      this.regs.read(13),
+            regE:      this.regs.read(14),
+            regF:      this.regs.read(15),
+            decA:      this.decA.read(),
+            decB:      this.decB.read(),
+            decC:      this.decC.read(),
         };
     }
 }
