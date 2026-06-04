@@ -4,51 +4,146 @@
     width: 60vw;
     height: 40vw;
     position: relative;
-    /* Adicionando flex para organizar os componentes soltos dentro da simulação */
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px; 
-    padding: 20px;
-    align-content: flex-start;
+    background: linear-gradient(
+    180deg,
+    #848484,
+    #545454
+    );
 }
 
 .componente {
     display: flex;
     flex-direction: column;
-    width: fit-content;
-    min-width: 120px;
-    width: fit-content;
-    background-color: white;
-    /* Borda arredondada estilo "pílula" */
-    border-radius: 25px; 
-    /* Esconde o que passar da borda, aplicando o arredondamento ao header automaticamente */
+    border-radius: 3px; 
     overflow: hidden; 
-    /* Borda e sombra sutis para destacar do fundo */
     border: 1px solid #333; 
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+    font-family: 'Roboto Mono', monospace;
+}
+
+.decA{
+    position: absolute;
+    right: 40%;
+    top: 5%;
+    width: 8%;
+    height: 6%;
+}
+.decB{
+    position: absolute;
+    right: 40%;
+    top: 13%;
+    width: 8%;
+    height: 6%;
+}
+.decC{
+    position: absolute;
+    right: 40%;
+    top: 21%;
+    width: 8%;
+    height: 6%;
+}
+.mir{
+    position: absolute;
+    right: 9%;
+    top: 60%;
+    width: 18%;
+    height: 8%;
+}
+.mpc{
+    position: absolute;
+    right: 15%;
+    top: 40%;
+    width: 5%;
+    height: 6%;
+}
+.msl{
+    position: absolute;
+    right: 35%;
+    top: 75%;
+    width: 5%;
+    height: 6%;
+}
+.mmux{
+    position: absolute;
+    right: 9%;
+    top: 30%;
+    width: 18%;
+    height: 8%;
+}
+.controlStore{
+    position: absolute;
+    right: 9%;
+    top: 50%;
+    width: 18%;
+    height: 8%;
+}
+.mar{
+    position: absolute;
+    left: 0%;
+    top: 30%;
+    width: 14%;
+    height: 8%;
+}
+.mbr{
+    position: absolute;
+    left: 0%;
+    top: 40%;
+    width: 18%;
+    height: 8%;
+}
+.latchA{
+    position: absolute;
+    top: 49%;
+    right: 60%;
+    width: 17%;
+    height: 8%;
+}
+.latchB{
+    position: absolute;
+    top: 49%;
+    right: 40%;
+    width: 17%;
+    height: 8%;
+}
+.amux{
+    position: absolute;
+    top: 60%;
+    right: 60%;
+    width: 18%;
+    height: 8%;
+}
+.shifter{
+    position: absolute;
+    top: 88%;
+    right: 49%;
+    width: 18%;
+    height: 8%;
+}
+.clock{
+    position: absolute;
+    right: 2%;
+    top: 2%;
+    width: 18%;
+    height: 12%;
 }
 
 .label {
     background-color: #333;
     color: white;
-    /* Efeito de sombra laranja claro que aparece no texto "Shifter" na sua imagem */
     text-shadow: 1px 1px 2px #d97706; 
-    font-size: 0.4rem;
     font-weight: bold;
     text-align: center;
-    padding: 8px 15px;
+    padding: 2% 4%;
     border-bottom: 1px solid #222;
+    font-size: clamp(0.8rem, 1vw, 1.2rem);
 }
 
 .value {
     color: black;
-    background-color: white;
-    font-size: 0.8rem;
+    font-size: clamp(0.8rem, 1vw, 1.2rem);
     text-align: center;
-    padding: 8px 15px;
-    /* Fonte com serifa para imitar os zeros da sua imagem */
-    font-family: 'Times New Roman', Times, serif; 
-    letter-spacing: 1px;
+    padding: 4% 10%;
+    font-family: 'Roboto Mono', monospace;
 }
 
 /* Container do Banco */
@@ -56,7 +151,8 @@
     border: 2px solid #555;
     background-color: #101010; /* Fundo levemente cinza para agrupar visualmente */
     border-radius: 12px;
-    
+    position: absolute;
+    top: 0%;
     width: fit-content;
 }
 
@@ -70,7 +166,7 @@
     padding-bottom: 5px;
     margin-bottom: 5px;
     font-size: 0.8rem;
-    font-family: sans-serif;
+    font-family: 'Roboto Mono', monospace;
     border-radius: 12px;
 }
 
@@ -108,5 +204,5 @@
     text-align: center;
     font-size: 0.8rem;
     padding: 4px 0;
-    font-family: 'Times New Roman', Times, serif; /* Mantém o estilo dos números */
+    font-family: 'Roboto Mono', monospace;
 }
