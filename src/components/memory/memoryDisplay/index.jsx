@@ -26,9 +26,16 @@ export default function MemoryDisplay({ id, close }) {
 
         if (isBinary) {
             return binaryValue;
+        }else{
+            let numerico = parseInt(binaryValue, 2);
+            if(binaryValue[0] === '1'){
+                numerico = numerico - 2*32768;
+                
+            }
+            return numerico;
         }
 
-        return parseInt(binaryValue, 2);
+        
     }
 
     function openSetting(){
