@@ -46,7 +46,7 @@ microprograma[8] = {label: "lodd3", amux: "1", cond: "11", alu: "10", sh: "00", 
 microprograma[9] = {label: "stod1", amux: "0", cond: "00", alu: "10", sh: "00", mbr: "1", mar: "1", rd: "0", wr: "1", enc: "0", c: "0000", b: "0011", a: "0001", addr: "00000000"};
 
 // 10: wr; goto 0;
-microprograma[10] = {label: "stod2", amux: "0", cond: "11", alu: "00", sh: "00", mbr: "1", mar: "0", rd: "0", wr: "1", enc: "0", c: "0000", b: "0010", a: "0000", addr: "00000000"};
+microprograma[10] = {label: "stod2", amux: "0", cond: "11", alu: "00", sh: "00", mbr: "0", mar: "0", rd: "0", wr: "1", enc: "0", c: "0000", b: "0010", a: "0000", addr: "00000000"};
 
 // 11: alu:=tir; if n then goto 15;
 microprograma[11] = {label: "stod_j", amux: "0", cond: "01", alu: "10", sh: "00", mbr: "0", mar: "0", rd: "0", wr: "0", enc: "0", c: "0000", b: "0000", a: "0100", addr: "00001111"};
@@ -145,7 +145,7 @@ microprograma[35] = {label: "stol_j", amux: "0", cond: "01", alu: "10", sh: "00"
 microprograma[36] = {label: "addl1", amux: "0", cond: "00", alu: "00", sh: "00", mbr: "0", mar: "0", rd: "0", wr: "0", enc: "1", c: "1011", b: "0011", a: "0010", addr: "00000000"};
 
 // 37: mar:=a; rd; goto 13;
-microprograma[37] = { label: "addl2", amux: "0", cond: "11", alu: "10", sh: "00", mbr: "0", mar: "1", rd: "1", wr: "0", enc: "0", c: "0000", b: "1011", a: "0000", addr: "00001101" };
+microprograma[37] = {label: "addl2", amux: "0", cond: "11", alu: "10", sh: "00", mbr: "0", mar: "1", rd: "1", wr: "0", enc: "0", c: "0000", b: "1011", a: "0000", addr: "00001101"};
 
 
 // SUBL 1011
