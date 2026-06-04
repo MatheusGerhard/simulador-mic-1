@@ -10,7 +10,7 @@ body{
 
 main{
     flex: 1;
-    padding-top: 1rem;
+    padding-top: 0.75rem;
     padding-bottom: 1rem;
     display: flex;
     justify-content: space-around;

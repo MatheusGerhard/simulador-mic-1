@@ -11,9 +11,9 @@ export default function ALU({ label, value, className }) {
                 >
                 <polygon
                     points="10,10 42,10 50,30 70,30 78,10 110,10 95,60 25,60"
-                    fill="transparent"
+                    fill="rgb(240, 248, 255)"
                     stroke="var(--gray-900)"
-                    strokeWidth="0.5"
+                    strokeWidth="0.75"
                 />
             </svg>
 

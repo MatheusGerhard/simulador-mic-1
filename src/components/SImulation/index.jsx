@@ -89,7 +89,6 @@ export default function Simulation() {
         <div className={styles.simulation}>
 
             <BancoDeRegistradores estado={estado}/>
-            
           
             <COMPONENTE label="Clock" value={`Ciclos : ${estado.ciclos} |  Subciclo : ${estado.subciclo}`} className={styles.clock}/>
             <COMPONENTE label="DEC A" value={estado.decA} className={styles.decA} />
@@ -97,7 +96,6 @@ export default function Simulation() {
             <COMPONENTE label="DEC C" value={estado.decC} className={styles.decC} />
 
             <COMPONENTE label="MIR" value={estado.mir} className={styles.mir}/>
-            
             
             <COMPONENTE label="MPC" value={estado.mpc} className={styles.mpc}/>
             <COMPONENTE label="MSL" value={estado.msl} className={styles.msl}/>
@@ -113,7 +111,6 @@ export default function Simulation() {
             <ALU label="ULA" value={`${estado.aluRes} (Z=${estado.aluZ} N=${estado.aluN})`} className={styles.alu}/>
             <COMPONENTE label="Shifter" value={estado.shifter} className={styles.shifter}/>
 
-            
         </div>
     );
 }
