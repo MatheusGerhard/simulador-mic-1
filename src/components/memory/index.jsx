@@ -7,7 +7,7 @@ import { uc } from "../../../mac1/teste3";
 import { executa } from "../../../mac1/teste3";
 
 export default function Memory() {
-    const [memoryNum, setMemoryNum] = useState([1, 0, 0, 0]);
+    const [memoryNum, setMemoryNum] = useState([1, 0, 0]);
 
     function addMemory(pos) {
         setMemoryNum((current) => {
@@ -70,57 +70,41 @@ export default function Memory() {
                 </div>
                 <div className={styles.division}></div>
                 <div className={styles.container}>
-                    <div className={styles.group}>
-                        <div className={styles.slot}>
-                            {memoryNum[0] ? (
-                                <MemoryDisplay
-                                    close={deleteMemory}
-                                    id={0}
-                                />
-                            ) : (
-                                <button className={styles.addButton} onClick={() => addMemory(0)}>
-                                    <h1 className={styles.buttonText}>+</h1>
-                                </button>
-                            )}
-                        </div>
-                        <div className={styles.slot}>
-                            {memoryNum[1] ? (
-                                <MemoryDisplay
-                                    close={deleteMemory}
-                                    id={1}
-                                />
-                            ) : (
-                                <button className={styles.addButton} onClick={() => addMemory(1)}>
-                                    <h1 className={styles.buttonText}>+</h1>
-                                </button>
-                            )}
-                        </div>
+                    <div className={styles.slot}>
+                        {memoryNum[0] ? (
+                            <MemoryDisplay
+                                close={deleteMemory}
+                                id={0}
+                            />
+                        ) : (
+                            <button className={styles.addButton} onClick={() => addMemory(0)}>
+                                <h1 className={styles.buttonText}>+</h1>
+                            </button>
+                        )}
                     </div>
-                    <div className={styles.group}>
-                        <div className={styles.slot}>
-                            {memoryNum[2] ? (
-                                <MemoryDisplay
-                                    close={deleteMemory}
-                                    id={2}
-                                />
-                            ) : (
-                                <button className={styles.addButton} onClick={() => addMemory(2)}>
-                                    <h1 className={styles.buttonText}>+</h1>
-                                </button>
-                            )}
-                        </div>
-                        <div className={styles.slot}>
-                            {memoryNum[3] ? (
-                                <MemoryDisplay
-                                    close={deleteMemory}
-                                    id={3}
-                                />
-                            ) : (
-                                <button className={styles.addButton} onClick={() => addMemory(3)}>
-                                    <h1 className={styles.buttonText}>+</h1>
-                                </button>
-                            )}
-                        </div>
+                    <div className={styles.slot}>
+                        {memoryNum[1] ? (
+                            <MemoryDisplay
+                                close={deleteMemory}
+                                id={1}
+                            />
+                        ) : (
+                            <button className={styles.addButton} onClick={() => addMemory(1)}>
+                                <h1 className={styles.buttonText}>+</h1>
+                            </button>
+                        )}
+                    </div>
+                    <div className={styles.slot}>
+                        {memoryNum[2] ? (
+                            <MemoryDisplay
+                                close={deleteMemory}
+                                id={2}
+                            />
+                        ) : (
+                            <button className={styles.addButton} onClick={() => addMemory(2)}>
+                                <h1 className={styles.buttonText}>+</h1>
+                            </button>
+                        )}
                     </div>
                 </div>
             </div>
