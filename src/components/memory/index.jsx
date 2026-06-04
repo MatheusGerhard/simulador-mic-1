@@ -8,6 +8,7 @@ import { executa } from "../../../mac1/teste3";
 
 export default function Memory() {
     const [memoryNum, setMemoryNum] = useState([1, 0, 0]);
+    const [isRunning, setIsRunning] = useState(false);
 
     function addMemory(pos) {
         setMemoryNum((current) => {
@@ -41,9 +42,11 @@ export default function Memory() {
 
     function initProgram() {
         executa(clock, uc);
+        setIsRunning(true);
     }
     function pauseProgram() {
         clock.pausar();
+        setIsRunning(false);
     }
 
     return (
@@ -57,7 +60,7 @@ export default function Memory() {
                     <button className={styles.button} onClick={clearMemory}>
                         <h1 className={styles.buttonText}>Clear</h1>
                     </button>
-                    <button className={styles.button} onClick={initProgram}>
+                    <button className={`${styles.button} ${isRunning ? styles.buttonActive : ""}`}onClick={initProgram}>
                         <h1 className={styles.buttonText}>►</h1>
                     </button>
                     <button className={styles.button} onClick={pauseProgram}>

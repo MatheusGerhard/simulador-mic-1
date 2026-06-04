@@ -73,6 +73,28 @@
     height: 50px;
     min-width: 50px;
     box-shadow: 0 8px 10px rgba(0, 0, 0, 0.25);
+    transition: background-color 0.2s ease;
+}
+.buttonActive {
+    background-color: var(--blue-700);
+    border-color: #0099ff;
+    transition: background-color 0.2s ease;
+}
+
+.buttonActive:hover {
+    background-color: var(--red-600);
+}
+
+.button:hover{
+    background-color: var(--gray-900);
+}
+
+.button:active {
+    background-color: var(--blue-700);
+}
+
+.button.active {
+    background-color: var(--blue-700);
 }
 
 .addButton{
