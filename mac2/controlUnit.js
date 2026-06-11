@@ -112,8 +112,7 @@ class ControlUnit {
                 break
 
 
-            case(4): // Envio dos resultados para:
-                // Registradores + MBR
+            case(4): // Escrita dos resultados e Próxima instrução
                 if (this.mir.read("enc") == "1") {
                     this.regs.write(this.decC.read(), this.shifter.read());
                     console.log("pc: "+this.regs.read(0));
@@ -124,14 +123,13 @@ class ControlUnit {
                 }
                 else if (this.mir.read("mbr") == "1") {
                     this.mbr.write(this.shifter.read());
-                    console.log("shi->mbr: "+this.mbr.read());
-                }
-                // RAM
-                if (this.mir.read("wr") == "1" && this.ramE == 0) {
                     this.ramE = 2;
+                    console.log("mar: "+this.mar.read());
+                    console.log("shi->mbr: "+this.mbr.read());
                     console.log("mbr Envia: "+this.mbr.read()+" para:"+this.mar.read());
                 }
-                // MBR (caso já tenha pedido algo antes)
+
+                // MBR (caso já tenha pedido algo)
                 if (this.ramL > 0) {
                     this.ramL--;
                     if (this.ramL == 0) {

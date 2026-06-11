@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import memoria from "../../../../processador/memory";
+import memoria from "../../../../mac1/componentes/memory";
 import styles from './styles.module.css';
 
 export default function MemoryDisplay({ id, close }) {

@@ -1,0 +1,127 @@
+TESTES DAS MACROINSTRUÇÕES MAC-1
+
+--- ARITMETICA DIRETA ---
+Testa: LODD, STOD, ADDD, SUBD
+
+LOCO 5 ; AC = 5
+STOD 10; Salva 5 no endereço 10
+LOCO 3 ; AC = 3
+STOD 11; Salva 3 no endereço 11
+LODD 10; AC = valor do endereço 10
+ADDD 11; AC += valor do endereço 11
+SUBD 11; AC -= valor do endereço 11
+
+LOCO 5 ;
+STOD 10;
+LOCO 3 ;
+STOD 11;
+LODD 10;
+ADDD 11;
+SUBD 11;
+
+
+--- SALTOS ---
+Testa: JUMP, JZER, JPOS, JNEG, JNZE
+
+JUMP  2; Pula para o 2
+LOCO  1; Esta linha não deve ser executada
+JZER  4; Se for zero, pula para o 4
+LOCO  1; Esta linha não deve ser executada
+LOCO 10; AC = 10
+JPOS  7; Se for positivo, pula para o endereço 7
+LOCO  1; Esta linha não deve ser executada
+STOD 20; Salva 10 no endereço 20
+LOCO  9; AC = 9
+SUBD 20; AC -= 9 = -1
+JNEG 12; Se for negativo, pula para o endereço 12
+LOCO  1; Esta linha não deve ser executada
+JNZE 14; Se for diferente de zero, pula para o endereço 14
+LOCO  1; Esta linha não deve ser executada
+LOCO  3; Endereco 14: Fim do teste
+
+JUMP  2;
+LOCO  1;
+JZER  4;
+LOCO  1;
+LOCO 10;
+JPOS  7;
+LOCO  1;
+STOD 20;
+LOCO  9;
+SUBD 20;
+JNEG 12;
+LOCO  1;
+JNZE 14;
+LOCO  1;
+LOCO  3;
+
+
+--- SUB-ROTINAS --- 
+Testa: CALL, RETN
+
+CALL  4; Pula para a sub-rotina e salva retorno
+LOCO  0; AC = 0 (limpa AC)
+LODD 15; Se voltar corretamente, carrega resultado
+JUMP  7; 
+
+sub-rotina:
+LOCO 10; AC = 10
+STOD 15; Salva 10 no endereço 15
+RETN   ; Volta para logo após o CALL
+
+LOCO  3; Finaliza
+
+
+CALL  4;
+LOCO  0;
+LODD 15;
+JUMP  7;
+LOCO 10;
+STOD 15;
+RETN   ;
+LOCO  3;
+
+
+--- MEMÓRIA LOCAL --- 
+Testa: LOCO, LODL, STOL, ADDL, SUBL, INSP, DESP
+
+DESP 2 ; Aloca 2 espaços na pilha
+LOCO 10; AC = 10
+STOL 0 ; Local[0] (SP+0) = 10
+LOCO 20; AC = 20
+STOL 1 ; Local[1] (SP+1) = 20
+LODL 0 ; AC = 10
+ADDL 1 ; AC = 10 + 20 = 30
+SUBL 0 ; AC = 30 - 10 = 20
+INSP 2 ; Desaloca 2 espaços
+
+DESP 2 ;
+LOCO 10;
+STOL 0 ;
+LOCO 20;
+STOL 1 ;
+LODL 0 ;
+ADDL 1 ;
+SUBL 0 ;
+INSP 2 ;
+
+
+--- PILHA ---
+Testa: PUSH, POP, PSHI, POPI, SWAP
+
+LOCO 20 ; Valor 20 no AC
+PUSH    ; Empilha 20
+LOCO 4094 ; Valor 4094 no AC
+STOD 4093 ; Salva 4094 no endereço 4093
+PSHI    ; Empilha 4094 abaixo do 20
+LOCO 30 ; Valor 30 no AC
+POPI    ; Vai até 4094 e acha o valor 4093. Vai até 4093 e acha o valor 4093
+POP     ; Desempilha (AC deve ficar 20)
+
+LOCO 10;
+PUSH   ;
+LOCO 4095;
+PSHI   ;
+LOCO 4092;
+POPI   ;
+POP    ;

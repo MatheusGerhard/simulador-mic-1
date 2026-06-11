@@ -1,12 +1,12 @@
-// Main Memory - Memória Principal (RAM)
+// Cache
 
-// Descrição: Armazena o programa (instruções) e os dados que serão processados.
-// Recebe: os arrays do compilador e, em caso de escrita, um dado do MDR. 
+// Descrição: Componente que guarda dados próximo ao processador.
+// Recebe: os arrays da Memória Principal e, em caso de escrita, um dado do MDR. 
 // Envia: O dado ou instrução presente no endereço solicitado para o MDR.
 
 
-class Memory {
-    constructor(size = 4096) {
+class Cache {
+    constructor(size = 4) {
         this.data = new Array(size).fill("00000000000000000000000000000000");
     }
 
@@ -21,4 +21,4 @@ class Memory {
     }
 }
 
-export default Memory;
+export default Cache;

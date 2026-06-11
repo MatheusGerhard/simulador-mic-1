@@ -1,7 +1,7 @@
 import { useState } from "react";
 import MemoryDisplay from "./memoryDisplay";
 import styles from "./styles.module.css";
-import memoria from "../../../processador/memory";
+import memoria from "../../../mac1/componentes/memory";
 import clock from "../../../mac1/teste3";
 import { uc } from "../../../mac1/teste3";
 import { executa } from "../../../mac1/teste3";
