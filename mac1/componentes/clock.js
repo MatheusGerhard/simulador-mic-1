@@ -7,11 +7,7 @@ class Clock {
         this.intervaloMs = 1000;
         this.emExecucao = false;
         this.timerId = null;
-        
-        
-    }
-
-    
+    }    
 
     setVelocidade(ms) {
         this.intervaloMs = ms;
@@ -22,10 +18,8 @@ class Clock {
         this.subciclo++;
         if (this.subciclo > 4) {
             this.subciclo = 1;
-            this.totalCiclos++;
-            
-        }
-        
+            this.totalCiclos++;            
+        }        
     }
 
     pulso(controlUnit) {

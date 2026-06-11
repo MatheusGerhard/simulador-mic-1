@@ -109,19 +109,20 @@ INSP 2 ;
 --- PILHA ---
 Testa: PUSH, POP, PSHI, POPI, SWAP
 
-LOCO 20 ; Valor 20 no AC
-PUSH    ; Empilha 20
-LOCO 4094 ; Valor 4094 no AC
-STOD 4093 ; Salva 4094 no endereço 4093
-PSHI    ; Empilha 4094 abaixo do 20
-LOCO 30 ; Valor 30 no AC
-POPI    ; Vai até 4094 e acha o valor 4093. Vai até 4093 e acha o valor 4093
-POP     ; Desempilha (AC deve ficar 20)
+LOCO   10; Valor 10 no AC
+PUSH     ; Empilha 10 no 4095
+LOCO 4095; AC = 4095
+PSHI     ; Vai no 4095, pegar o valor 10 e empilhar no 4094
+LOCO 4092; AC = 4092
+POPI     ; Vai até 4094, desempilha o valor 10 e coloca no 4092
+POP      ; Desempilha (AC deve ficar 10)
+SWAP     ; Troca o sp de 0 para 10
 
-LOCO 10;
-PUSH   ;
+LOCO   10;
+PUSH     ;
 LOCO 4095;
-PSHI   ;
+PSHI     ;
 LOCO 4092;
-POPI   ;
-POP    ;
+POPI     ;
+POP      ;
+SWAP     ;

@@ -46,8 +46,6 @@ class ControlUnit {
         this.micro = null;
         this.ramL = 0;
         this.ramE = 0;
-        this.hits = 0;
-        this.misses = 0;
     }
 
     rodarCiclo(sc,ciclos) {
@@ -58,7 +56,7 @@ class ControlUnit {
                 if (this.micro == null || this.micro == undefined) return false;
 
                 this.mir.write(this.micro);
-                console.log("MIR - "+this.mir.label.toUpperCase());
+                console.log("MIR - "+this.mpc.read()+": "+this.mir.label.toUpperCase());
 
                 break
 
@@ -88,10 +86,10 @@ class ControlUnit {
                 // MAR
                 if (this.mir.read("mar") == "1") {
                     this.mar.write(this.latB.read());
+                    console.log("mar recebe: "+this.mar.read());
                     if (this.mir.read("rd") == "1") {
                         this.ramL = 2;
                     }
-                    console.log("mar recebe: "+this.mar.read());
                 }
 
                 break
@@ -199,7 +197,6 @@ class ControlUnit {
         this.ramL = 0;
         this.ramE = 0;
         this.hits = 0;
-        this.misses = 0;        
     }
 
     // Funções de integração com a interface (React)

@@ -1,22 +1,23 @@
 // Importações
-import Amux from './componentes/amux.js';
-import ArithmeticLogicUnit from './componentes/alu.js';
+import Amux from '../mac1/componentes/amux.js';
+import ArithmeticLogicUnit from '../mac1/componentes/alu.js';
+import Cache from './componentes/cache.js';
 import ControlStore from './componentes/cs.js';
-import DecoderC from './componentes/decoderC.js';
-import DecoderB from './componentes/decoderB.js';
-import DecoderA from './componentes/decoderA.js';
-import Increment from './componentes/increment.js';
-import LatchA from './componentes/latchA.js';
-import LatchB from './componentes/latchB.js';
-import MAR from './componentes/mar.js';
-import MBR from './componentes/mbr.js';
-import memoria from "./componentes/memory.js";
-import MicroInstructionRegister from './componentes/mir.js';
-import MicroprogramCounter from './componentes/mpc.js';
-import Mmux from './componentes/mmux.js';
-import MSL from './componentes/msl.js';
-import Registers from './componentes/registers.js';
-import Shifter from './componentes/shifter.js';
+import DecoderC from '../mac1/componentes/decoderC.js';
+import DecoderB from '../mac1/componentes/decoderB.js';
+import DecoderA from '../mac1/componentes/decoderA.js';
+import Increment from '../mac1/componentes/increment.js';
+import LatchA from '../mac1/componentes/latchA.js';
+import LatchB from '../mac1/componentes/latchB.js';
+import MAR from '../mac1/componentes/mar.js';
+import MBR from '../mac1/componentes/mbr.js';
+import memoria from "../mac1/componentes/memory.js";
+import MicroInstructionRegister from '../mac1/componentes/mir.js';
+import MicroprogramCounter from '../mac1/componentes/mpc.js';
+import Mmux from '../mac1/componentes/mmux.js';
+import MSL from '../mac1/componentes/msl.js';
+import Registers from '../mac1/componentes/registers.js';
+import Shifter from '../mac1/componentes/shifter.js';
 
 
 class ControlUnit {
@@ -24,6 +25,7 @@ class ControlUnit {
         // classes
         this.alu = new ArithmeticLogicUnit();
         this.amux = new Amux();
+        this.cache = new Cache();
         this.cs = new ControlStore();
         this.increm = new Increment();
         this.decC = new DecoderC();
@@ -53,12 +55,9 @@ class ControlUnit {
     rodarCiclo(sc,ciclos) {
         switch(sc) {
             case(1): // Busca microinstrução
-                const endereco = this.mpc.read();
-                this.micro = this.cs.read(endereco);
-                if (this.micro == null || this.micro == undefined) return false;
-
+                this.micro = this.cs.read(this.mpc.read());
                 this.mir.write(this.micro);
-                console.log("MIR - "+this.mir.label.toUpperCase());
+                console.log("MIR - "+this.mpc.read()+": "+this.mir.label.toUpperCase());
 
                 break
 
@@ -68,30 +67,22 @@ class ControlUnit {
                 this.decB.write(this.mir.read("b"));
                 this.decC.write(this.mir.read("c"));
 
-                const valorA = this.regs.read(this.decA.read());
-                const valorB = this.regs.read(this.decB.read());
-
-                this.latA.write(valorA);
-                this.latB.write(valorB);
+                this.latA.write(this.regs.read(this.decA.read()));
+                this.latB.write(this.regs.read(this.decB.read()));
 
                 console.log("lA: "+this.latA.read());
                 console.log("lB: "+this.latB.read());
 
-                // Caso tenha pedido escrita, o dado chegou lá agora
-                if (this.ramE > 0) {
-                    this.ramE--;
-                    if (this.ramE == 0) {                        
-                        this.ram.write(this.mar.read(), this.mbr.read());
-                    }
-                }
-
                 // MAR
                 if (this.mir.read("mar") == "1") {
                     this.mar.write(this.latB.read());
-                    if (this.mir.read("rd") == "1") {
-                        this.ramL = 2;
-                    }
                     console.log("mar recebe: "+this.mar.read());
+
+                    if (this.mir.read("rd") == "1") {
+                        // this.cache.write(this.mar.read());
+                        this.mbr.write(this.cache.read(this.mar.read()));
+                        console.log("cache->mbr: "+this.mbr.read());
+                    }
                 }
 
                 break
@@ -123,20 +114,12 @@ class ControlUnit {
                 }
                 else if (this.mir.read("mbr") == "1") {
                     this.mbr.write(this.shifter.read());
-                    this.ramE = 2;
-                    console.log("mar: "+this.mar.read());
                     console.log("shi->mbr: "+this.mbr.read());
-                    console.log("mbr Envia: "+this.mbr.read()+" para:"+this.mar.read());
                 }
-
-                // MBR (caso já tenha pedido algo)
-                if (this.ramL > 0) {
-                    this.ramL--;
-                    if (this.ramL == 0) {
-                        const data = this.ram.read(this.mar.read());
-                        this.mbr.write(data);
-                        console.log("ram->mbr: "+this.mbr.read());
-                    }
+                // RAM
+                if (this.mir.read("wr") == "1" && this.ramE == 0) {
+                    this.cache.write(this.mar.read(), this.mbr.read());
+                    console.log("mbr Envia: "+this.mbr.read()+" para:"+this.mar.read());
                 }
 
 
