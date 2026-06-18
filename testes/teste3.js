@@ -1,5 +1,5 @@
-import ControlUnit from './controlUnit.js';
-import Clock from './componentes/clock.js';
+import ControlUnit from '../mac1/controlUnit.js';
+import Clock from '../mac1/componentes/clock.js';
 
 
 

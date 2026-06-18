@@ -1,4 +1,4 @@
-import ArithmeticLogicUnit from './componentes/alu.js';
+import ArithmeticLogicUnit from '../mac1/componentes/alu.js';
 
 const alu = new ArithmeticLogicUnit();
 

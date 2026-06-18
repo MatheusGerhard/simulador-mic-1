@@ -2,9 +2,9 @@ import { useState } from "react";
 import MemoryDisplay from "./memoryDisplay";
 import styles from "./styles.module.css";
 import memoria from "../../../mac1/componentes/memory";
-import clock from "../../../mac1/teste3";
-import { uc } from "../../../mac1/teste3";
-import { executa } from "../../../mac1/teste3";
+import clock from "../../../testes/teste3";
+import { uc } from "../../../testes/teste3";
+import { executa } from "../../../testes/teste3";
 
 export default function Memory() {
     const [memoryNum, setMemoryNum] = useState([1, 0, 0]);

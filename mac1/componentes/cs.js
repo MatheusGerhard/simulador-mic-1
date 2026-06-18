@@ -4,7 +4,7 @@
 // Recebe: Endereços de 9 bits vindos do MPC.
 // Envia: A microinstrução correspondente para o MIR.
 
-// Microprograma - As 78 Microinstruções baseado no microcódigo do Mac-1 (Tanenbaum, Organização Estruturada de Computadores)
+// Microprograma - As 79 Microinstruções baseado no microcódigo do Mac-1 (Tanenbaum: Organização Estruturada de Computadores)
 
 const microprograma = [];
 

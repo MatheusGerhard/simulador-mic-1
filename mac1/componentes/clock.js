@@ -7,19 +7,38 @@ class Clock {
         this.intervaloMs = 1000;
         this.emExecucao = false;
         this.timerId = null;
-    }    
+        this.halt = 0;
+    }
 
     setVelocidade(ms) {
         this.intervaloMs = ms;
     }
 
     subPulso(controlUnit) {
-        controlUnit.rodarCiclo(this.subciclo,this.totalCiclos);        
-        this.subciclo++;
-        if (this.subciclo > 4) {
-            this.subciclo = 1;
-            this.totalCiclos++;            
-        }        
+        if (this.halt) {
+            this.halt = 0;
+            this.totalCiclos++;
+            console.log("-------------- "+3+" --------------");
+            console.log("-------------- "+4+" --------------");
+            console.log("Espere.");
+            console.log("=============== "+this.totalCiclos+" ===============");
+            console.log("-------------- "+1+" --------------");
+        }
+        else {
+            console.log("-------------- "+this.subciclo+" --------------");
+            let teste = controlUnit.rodarCiclo(this.subciclo, this.totalCiclos);
+            if (teste == false) {
+                console.log("Cache miss!");
+                this.halt = 1;
+            }
+            else {
+                this.subciclo++;
+                if (this.subciclo > 4) {
+                    this.subciclo = 1;
+                    this.totalCiclos++;
+                }
+            }              
+        }
     }
 
     pulso(controlUnit) {
@@ -41,7 +60,6 @@ class Clock {
             }
             
             if (this.subciclo == 1) console.log("=============== "+this.totalCiclos+" ===============");
-            console.log("-------------- "+this.subciclo+" --------------");
             this.subPulso(controlUnit);
             
         }, this.intervaloMs);

@@ -3,9 +3,9 @@ TESTES DAS MACROINSTRUÇÕES MAC-1
 --- ARITMETICA DIRETA ---
 Testa: LODD, STOD, ADDD, SUBD
 
-LOCO 5 ; AC = 5
+LOCO  5; AC = 5
 STOD 10; Salva 5 no endereço 10
-LOCO 3 ; AC = 3
+LOCO  3; AC = 3
 STOD 11; Salva 3 no endereço 11
 LODD 10; AC = valor do endereço 10
 ADDD 11; AC += valor do endereço 11

@@ -1,6 +1,6 @@
 import styles from './styles.module.css'
 import { useEffect, useState } from 'react'
-import {uc} from '../../../mac1/teste3' // instância exportada
+import {uc} from '../../../testes/teste3' // instância exportada
 import ALU from './ALU';
 
 const estadoInicial = {
