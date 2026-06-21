@@ -2,13 +2,49 @@
     border: 1px solid var(--gray-600);
     box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.4);
     width: 75vw;
-    height: 42vw;
+    height: 45vw;
     position: relative;
     background: linear-gradient(
     180deg,
     #848484,
     #545454
     );
+}
+
+.simBox{
+    display: flex;
+    flex-direction: column;
+}
+
+.selectProcesser{
+    background-color: var(--gray-900);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    height: 80px;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.4);
+}
+.botao {
+  padding: 6px 12px;
+  border: 2px solid #d1d5db;
+  border-radius: 8px;
+  background: #fff;
+  color: var(--gray-900);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 18px;
+  font-family: 'Roboto Mono', monospace;;
+}
+
+.botao:hover {
+  border-color: var(--blue-600);
+}
+
+.ativo {
+  background: var(--blue-600);
+  color: #fff;
+  border-color: var(--blue-600);
 }
 
 .componente {

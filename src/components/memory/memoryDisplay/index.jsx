@@ -62,12 +62,6 @@ export default function MemoryDisplay({ id, close }) {
     return (
         <div className={styles.memory}>
             <div className={styles.header}>
-                <button className={styles.button} onClick={() => close(id)}>
-                    <h1 className={styles.buttonText}>×</h1>
-                </button>
-                <div className={styles.title}>
-                    Memória
-                </div>
                 <div className={styles.headerButtons}>
                     <button className={styles.button} onClick={changeBase}>
                         <svg width="22" height="22" viewBox="0 0 47 47" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -80,6 +74,12 @@ export default function MemoryDisplay({ id, close }) {
                         </svg>
                     </button>
                 </div>
+                <div className={styles.title}>
+                    Memória
+                </div>
+                <button className={styles.button} onClick={() => close(id)}>
+                    <h1 className={styles.buttonText}>×</h1>
+                </button>
             </div>
             <div className={styles.container}>
                 {

@@ -78,6 +78,7 @@ function BancoDeRegistradores({ estado , customStyle}) {
 
 export default function Simulation() {
     const [estado, setEstado] = useState(estadoInicial);
+    const [ativo, setAtivo] = useState(null);
 
     useEffect(() => {
         uc.setCallback((novoEstado) => {
@@ -86,31 +87,46 @@ export default function Simulation() {
     }, []);
 
     return (
-        <div className={styles.simulation}>
+        <div className={styles.simBox}>
+            <div className={styles.selectProcesser}>
+                <button className={`${styles.botao} ${ativo === 1 ? styles.ativo : ""}`} onClick={() => setAtivo(1)}>
+                    Mic 1
+                </button>
 
-            <BancoDeRegistradores estado={estado}/>
-          
-            <COMPONENTE label="Clock" value={`Ciclos : ${estado.ciclos} |  Subciclo : ${estado.subciclo}`} className={styles.clock}/>
-            <COMPONENTE label="DEC A" value={estado.decA} className={styles.decA} />
-            <COMPONENTE label="DEC B" value={estado.decB} className={styles.decB} />
-            <COMPONENTE label="DEC C" value={estado.decC} className={styles.decC} />
+                <button className={`${styles.botao} ${ativo === 2 ? styles.ativo : ""}`} onClick={() => setAtivo(2)}>
+                    Mic 2
+                </button>
 
-            <COMPONENTE label="MIR" value={estado.mir} className={styles.mir}/>
-            
-            <COMPONENTE label="MPC" value={estado.mpc} className={styles.mpc}/>
-            <COMPONENTE label="MSL" value={estado.msl} className={styles.msl}/>
-            <COMPONENTE label="MMUX" value={estado.mmux} className={styles.mmux}/>
-            
-            <COMPONENTE label = "Control Store" value="256 x 32" className={styles.controlStore}/>
-            
-            <COMPONENTE label="MAR" value={estado.mar} className={styles.mar}/>
-            <COMPONENTE label="MBR" value={estado.mbr} className={styles.mbr}/>
-            <COMPONENTE label="Latch A" value={estado.latA} className={styles.latchA}/>
-            <COMPONENTE label="Latch B" value={estado.latB} className={styles.latchB}/>
-            <COMPONENTE label="AMUX" value={estado.amux} className={styles.amux}/>
-            <ALU label="ULA" value={`${estado.aluRes} (Z=${estado.aluZ} N=${estado.aluN})`} className={styles.alu}/>
-            <COMPONENTE label="Shifter" value={estado.shifter} className={styles.shifter}/>
+                <button className={`${styles.botao} ${ativo === 3 ? styles.ativo : ""}`} onClick={() => setAtivo(3)}>
+                    Mic 3
+                </button>
+            </div>
+            <div className={styles.simulation}>
 
+                <BancoDeRegistradores estado={estado}/>
+            
+                <COMPONENTE label="Clock" value={`Ciclos : ${estado.ciclos} |  Subciclo : ${estado.subciclo}`} className={styles.clock}/>
+                <COMPONENTE label="DEC A" value={estado.decA} className={styles.decA} />
+                <COMPONENTE label="DEC B" value={estado.decB} className={styles.decB} />
+                <COMPONENTE label="DEC C" value={estado.decC} className={styles.decC} />
+
+                <COMPONENTE label="MIR" value={estado.mir} className={styles.mir}/>
+                
+                <COMPONENTE label="MPC" value={estado.mpc} className={styles.mpc}/>
+                <COMPONENTE label="MSL" value={estado.msl} className={styles.msl}/>
+                <COMPONENTE label="MMUX" value={estado.mmux} className={styles.mmux}/>
+                
+                <COMPONENTE label = "Control Store" value="256 x 32" className={styles.controlStore}/>
+                
+                <COMPONENTE label="MAR" value={estado.mar} className={styles.mar}/>
+                <COMPONENTE label="MBR" value={estado.mbr} className={styles.mbr}/>
+                <COMPONENTE label="Latch A" value={estado.latA} className={styles.latchA}/>
+                <COMPONENTE label="Latch B" value={estado.latB} className={styles.latchB}/>
+                <COMPONENTE label="AMUX" value={estado.amux} className={styles.amux}/>
+                <ALU label="ULA" value={`${estado.aluRes} (Z=${estado.aluZ} N=${estado.aluN})`} className={styles.alu}/>
+                <COMPONENTE label="Shifter" value={estado.shifter} className={styles.shifter}/>
+
+            </div>
         </div>
     );
 }
