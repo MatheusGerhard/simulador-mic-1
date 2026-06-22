@@ -94,7 +94,7 @@ async function executarPainel() {
         console.clear();
         console.log("=== PAINEL DE TESTES DA ARQUITETURA ===");
         const macOpcao = await rl.question("Digite o modelo do mac (1 ou 2) ou 'sair': ");
-        
+
         if (macOpcao.toLowerCase() === 'sair') {
             continuar = false;
             break;
@@ -126,8 +126,8 @@ async function executarPainel() {
         const clock = new Clock();
 
         console.log(`\nIniciando teste do MAC-${macOpcao} [${programaSelecionado.nome}]...`);
-        clock.setVelocidade(50); 
-        
+        clock.setVelocidade(50);
+
         // Usamos uma Promise para segurar o loop do painel enquanto o clock roda
         await new Promise((resolve) => {
             clock.iniciar(uc);

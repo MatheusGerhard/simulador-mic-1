@@ -1,7 +1,7 @@
 // Importações
 import Amux from '../mac1/componentes/amux.js';
 import ArithmeticLogicUnit from '../mac1/componentes/alu.js';
-import Cache from './componentes/cache.js';
+import Cache from '../mac2/componentes/cache.js';
 import ControlStore from './componentes/cs.js';
 import DecoderC from '../mac1/componentes/decoderC.js';
 import DecoderB from '../mac1/componentes/decoderB.js';
@@ -50,107 +50,196 @@ class ControlUnit {
         this.ramE = 0;
         this.hits = 0;
         this.misses = 0;
+
+        // pipeline
+        this.memoryBusy = 0;
+        this.estagios = [];
+        this.reset = 0;
+        this.pipeline = {
+            IF_ID: {mir: null},
+            ID_EX: {mir: null},
+            EX_MEM: {mir: null},
+            MEM_WB: {mir: null}
+        };
     }
 
-    rodarCiclo(sc,ciclos) {
-        switch(sc) {
-            case(1): // Busca microinstrução
-                this.micro = this.cs.read(this.mpc.read());
-                this.mir.write(this.micro);
-                console.log("MIR - "+this.mpc.read()+": "+this.mir.label.toUpperCase());
+    // O loop principal (do final para o início para evitar atropelos)
+    rodarCiclo(ciclos) {
+        // ciclos iniciais
+        switch(this.reset) {
+            case(0):
+            this.reset++;
+            this.estagios = [1];
+            break;
 
-                break
+            case(1):
+            this.reset++;
+            this.estagios = [1,2];
+            break;
 
+            case(2):
+            this.reset++;
+            this.estagios = [1,2,3];
+            break;
 
-            case(2): // Ativando registradores: 16 + MAR + MBR
-                this.decA.write(this.mir.read("a"));
-                this.decB.write(this.mir.read("b"));
-                this.decC.write(this.mir.read("c"));
+            case(3):
+            this.reset++;
+            this.estagios = [1,2,3,4];
+            break;
 
-                this.latA.write(this.regs.read(this.decA.read()));
-                this.latB.write(this.regs.read(this.decB.read()));
-
-                console.log("lA: "+this.latA.read());
-                console.log("lB: "+this.latB.read());
-
-                // MAR
-                if (this.mir.read("mar") == "1") {
-                    this.mar.write(this.latB.read());
-                    console.log("mar recebe: "+this.mar.read());
-
-                    if (this.mir.read("rd") == "1") {
-                        let data = this.cache.read(this.mar.read());
-                        if (data == null) {
-                            this.misses++;
-                            return false;
-                        }
-                        else {
-                            this.mbr.write(data);
-                            console.log("cache->mbr: "+this.mbr.read());
-                            this.hits++;
-                        }
-                    }
-                }
-
-                break
-
-
-            case(3): // Calculo na ALU
-                this.amux.write(this.latA.read(), this.mbr.read(), this.mir.read("amux"));
-                this.amux.select();
-                console.log("amux: "+this.amux.read());
-
-                this.alu.write(this.amux.read(), this.latB.read(), this.mir.read("alu"))
-                this.alu.calcular();
-
-                this.shifter.write(this.alu.read("res"), this.mir.read("sh"));
-                this.shifter.deslocar();
-                console.log("alu/shi: "+this.shifter.read());
-
-                break
-
-
-            case(4): // Escrita dos resultados e Próxima instrução
-                if (this.mir.read("enc") == "1") {
-                    this.regs.write(this.decC.read(), this.shifter.read());
-                    console.log("pc: "+this.regs.read(0));
-                    console.log("ac: "+this.regs.read(1));
-                    console.log("sp: "+this.regs.read(2));
-                    console.log("ir: "+this.regs.read(3));
-                    console.log("tir: "+this.regs.read(4));
-                }
-                else if (this.mir.read("mbr") == "1") {
-                    this.mbr.write(this.shifter.read());
-                    console.log("shi->mbr: "+this.mbr.read());
-                }
-                // RAM
-                if (this.mir.read("wr") == "1" && this.ramE == 0) {
-                    this.cache.write(this.mar.read(), this.mbr.read());
-                    console.log("mbr->cache: "+this.mbr.read()+": "+this.mar.read());
-                }
-
-
-                // Próxima instrução
-                this.msl.write(this.alu.read("Z"), this.alu.read("N"), this.mir.read("cond"));
-                this.msl.calcula();
-
-                this.increm.write(this.mpc.read())
-                this.increm.increment();
-
-                this.mmux.write(this.increm.read(), this.mir.read("addr"), this.msl.read());
-                this.mmux.select();
-
-                this.mpc.write(this.mmux.read());
-
-                console.log("msl: "+this.msl.read()+" - goto: "+this.mpc.read());
-
-                break
+            default:
+            this.estagios = [1,2,3,4,5];
+            break;
         }
-        
+
+        // Verifica se o estágio MEM está ocupado
+        if (this.memoryBusy) {
+            this.estagios = []
+            console.log("Aguarde o cache.");
+            this.memoryBusy = 0;
+        }
+
+        if (this.estagios.includes(1)) {
+            this.estagioIF();
+        }
+        if (this.estagios.includes(2)) {
+            this.estagioID();
+        }
+        if (this.estagios.includes(3)) {
+            this.estagioEX();
+        }
+        if (this.estagios.includes(4)) {
+            this.estagioMEM();
+        }
+        if (this.estagios.includes(5)) {
+            this.estagioWB();
+        }
+
+
         if (this.onEstadoChange) {
-            this.onEstadoChange(this.getEstado(sc,ciclos));
+            this.onEstadoChange(this.getEstado(null, ciclos));
         }
         return true;
+    }
+
+    // IF (Instruction Fetch): Busca a instrução.
+    estagioIF() {
+        const micro = this.cs.read(this.mpc.read());
+
+        const mirInstance = new MicroInstructionRegister();
+        mirInstance.write(micro);
+
+        this.pipeline.IF_ID = {mir: mirInstance};
+        console.log("IF: addr: "+this.mpc.read()+", micro: "+mirInstance.label)
+    }
+
+    // ​ID (Instruction Decode): Decodifica a instrução e lê os registradores.
+    estagioID() {
+        const buffer = this.pipeline.IF_ID;
+        if (!buffer || !buffer.mir) return;
+
+        const mir = buffer.mir;
+        this.decA.write(mir.read("a"));
+        this.decB.write(mir.read("b"));
+
+        this.latA.write(this.regs.read(this.decA.read()));
+        this.latB.write(this.regs.read(this.decB.read()));
+
+        if (this.mir.read("mar") == "1") {
+            this.mar.write(this.latB.read());
+            console.log("mar recebe: "+this.mar.read());
+
+            if (this.mir.read("rd") == "1") {
+                let data = this.cache.read(this.mar.read());
+                if (data == null) {
+                    this.misses++;
+                    this.memoryBusy = 1;
+                }
+                else {
+                    this.mbr.write(data);
+                    this.hits++;
+                    console.log("cache->mbr: "+this.mbr.read());
+                }
+            }
+        }
+        
+        this.amux.write(this.latA.read(), this.mbr.read(), mir.read("amux"));
+        this.amux.select();
+
+        this.pipeline.ID_EX = {mir};
+        console.log("ID: mir: "+mir.label+", amux: "+this.amux.read()+", latB: "+this.latB.read())
+    }
+
+    // ​EX (Execute): Realiza a operação aritmética/lógica na ULA (ALU).
+    estagioEX() {
+        const buffer = this.pipeline.ID_EX;
+        if (!buffer || !buffer.mir) return;
+
+        const mir = buffer.mir;
+
+        this.alu.write(this.amux.read(), this.latB.read(), mir.read("alu"));
+        this.alu.calcular();
+
+        this.shifter.write(this.alu.read("res"), mir.read("sh"));
+        this.shifter.deslocar();
+
+        this.pipeline.EX_MEM = {mir};
+        console.log("EX: mir: "+mir.label+", res: "+this.shifter.read())
+
+        // Saltos
+        this.msl.write(this.alu.read("Z"), this.alu.read("N"), mir.read("cond"));
+        this.msl.calcula();
+
+        if (this.msl.read()==1) {
+            this.reset = 0;
+        }
+
+        this.increm.write(this.mpc.read());
+        this.increm.increment();
+
+        this.mmux.write(this.increm.read(), mir.read("addr"), this.msl.read());
+        this.mmux.select();
+
+        this.mpc.write(this.mmux.read());
+
+        console.log("msl: "+this.msl.read()+" - goto: "+this.mpc.read());
+    }
+
+    // ​MEM (Memory Access): Acesso à memória de dados (se necessário).
+    estagioMEM() {
+        const buffer = this.pipeline.EX_MEM;
+        if (!buffer || !buffer.mir) return;
+
+        const mir = buffer.mir;
+
+        if (mir.read("mbr") == "1") {
+            this.mbr.write(this.shifter.read());
+            console.log("shi->mbr: "+this.mbr.read());
+            if (mir.read("wr") == "1") {
+                this.cache.write(this.mar.read(), this.mbr.read());
+                // this.memoryBusy = 1;
+                console.log("mbr->cache: "+this.mbr.read()+': '+this.mar.read());
+            }
+        }
+
+        this.pipeline.MEM_WB = {mir};
+        console.log("MEM: mir: "+mir.label+", wr: "+mir.read("wr"))
+    }
+
+    // ​WB (Write Back): Grava o resultado de volta no banco de registradores
+    estagioWB() {
+        const buffer = this.pipeline.MEM_WB;
+        if (!buffer || !buffer.mir) return;
+
+        const mir = buffer.mir;
+
+        this.decC.write(mir.read("c"));
+
+        if (mir.read("enc") == "1") {
+            this.regs.write(this.decC.read(), this.shifter.read());
+        }
+
+        console.log("WB: mir: "+mir.label+", enc: "+mir.read("enc")+", reg: "+this.decC.read())
     }
 
     pausarCiclo(){
