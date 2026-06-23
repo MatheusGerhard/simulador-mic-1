@@ -16,9 +16,10 @@ main{
     justify-content: space-around;
     overflow-x: hidden;
 }
-@media (max-width: 768px) {
+@media (max-width: 1082px) {
   main {
     flex-direction: column-reverse;
+    justify-content: flex-end;
     gap: 10px;
   }
 }

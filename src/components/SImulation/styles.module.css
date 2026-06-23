@@ -10,7 +10,7 @@
     #545454
     );
 }
-@media (max-width: 768px) {
+@media (max-width: 1082px) {
   .simulation {
         width: 95vw;
         height: 57vw;
@@ -30,10 +30,10 @@
     justify-content: center;
     align-items: center;
     gap: 10px;
-    height: 80px;
+    padding: 2%;
     box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.4);
 }
-@media (max-width: 768px) {
+@media (max-width: 1082px) {
   .selectProcesser {
         width: 95vw;
         align-self: center;
@@ -41,14 +41,14 @@
 }
 
 .botao {
-  padding: 6px 12px;
+  padding: 1% 1%;
   border: 2px solid #d1d5db;
   border-radius: 8px;
   background: #fff;
   color: var(--gray-900);
   cursor: pointer;
   transition: all 0.2s ease;
-  font-size: 18px;
+  font-size: clamp(0.5rem, 1vw, 1.2rem);
   font-family: 'Roboto Mono', monospace;;
 }
 
@@ -65,7 +65,7 @@
 .componente {
     display: flex;
     flex-direction: column;
-    border-radius: 5px; 
+    border-radius: clamp(2px, 1vw ,5px); 
     overflow: hidden; 
     border: 1px solid #333; 
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
@@ -77,22 +77,22 @@
     position: absolute;
     right: 38%;
     top: 5%;
-    width: 6%;
-    height: 6%;
+    width: 8%;
+    height: 8%;
 }
 .decB{
     position: absolute;
     right: 38%;
     top: 13%;
-    width: 6%;
-    height: 6%;
+    width: 8%;
+    height: 8%;
 }
 .decC{
     position: absolute;
     right: 38%;
     top: 21%;
-    width: 6%;
-    height: 6%;
+    width: 8%;
+    height: 8%;
 }
 .mir{
     position: absolute;
@@ -124,10 +124,10 @@
 }
 .controlStore{
     position: absolute;
-    right: 9%;
+    right: 6%;
     top: 50%;
-    width: 14%;
-    height: 8%;
+    width: 19%;
+    height: 9%;
 }
 .mar{
     position: absolute;
@@ -185,14 +185,14 @@
     text-shadow: 1px 1px 2px #d97706; 
     font-weight: bold;
     text-align: center;
-    padding: 2% 4%;
+    padding: 2% 3%;
     border-bottom: 1px solid #222;
-    font-size: clamp(0.8rem, 1vw, 1.2rem);
+    font-size: clamp(0.4rem, 1vw, 1.2rem);
 }
 
 .value {
     color: black;
-    font-size: clamp(0.8rem, 1vw, 1.2rem);
+    font-size: clamp(0.3rem, 1vw, 1.2rem);
     text-align: center;
     padding: 4% 10%;
     font-family: 'Roboto Mono', monospace;
@@ -213,6 +213,14 @@
     flex-direction: column;
     font-family: 'Roboto Mono', monospace;
 }
+@media (max-width: 1082px) {
+  .banco {
+        height: 40%;
+        width: 47%;
+        top: 2%;
+    }
+}
+
 
 /* Parte do banco de registradores */
 .tituloBanco {
@@ -223,7 +231,7 @@
     font-weight: bold;
     text-align: center;
     border-bottom: 1px solid var(--gray-600);
-    font-size: clamp(0.8rem, 1vw, 1.2rem);
+    font-size: clamp(0.4rem, 1vw, 1.2rem);
     font-family: 'Roboto Mono', monospace;
     padding: 1% 1%;
 }
@@ -267,7 +275,7 @@
     color: var(--white);
 
     font-weight: 700;
-    font-size: clamp(0.75rem, 0.7vw, 1.2rem);
+    font-size: clamp(0.4rem, 1vw, 1.2rem);
 
     border-bottom: 1px solid var(--gray-600);
 }
@@ -282,7 +290,5 @@
     color: black;
     background-color:aliceblue;
     font-family: 'Roboto Mono', monospace;
-    font-size: clamp(0.35rem, 0.8vw, 1.2rem);
-
-    padding: 2%;
+    font-size: clamp(0.25rem, 0.8vw, 1.2rem);
 }

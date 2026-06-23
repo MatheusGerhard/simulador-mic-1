@@ -9,8 +9,9 @@
     background-color: var(--gray-800);
     border-radius: 1rem;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+    justify-content: flex-start;
 }
-@media (max-width: 768px) {
+@media (max-width: 1082px) {
     .memory{
         width: 94vw;
         align-self: center;
@@ -69,9 +70,9 @@
     align-items: center;
     justify-content: center;
 }
-@media (max-width: 768px) {
+@media (max-width: 1082px) {
     .slot{
-        height: 35vw;
+        height: 55vw;
     }
 }
 
