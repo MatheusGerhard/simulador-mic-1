@@ -73,12 +73,23 @@ class Montador{
         if (linha[0].endsWith(":")) {
             linha[0] = linha[0].replace(":", "");
             rotulo = linha[0];
-            rotulo_index = linha[1];
-            if (isNaN(parseInt(rotulo_index))) {
-                // Rótulo a resolver
+
+            if (INSTRUCOES_SEM_OPERANDO.has(linha[1])) {
+                // Rótulo seguido de opcode sem operando, ex: "X: RETN"
+                opcode = linha[1];
+                if (!valida_opcode(opcode, null)) {
+                    return { rotulo, rotulo_index, opcode, operando, error: 1 };
+                }
             } else {
-                rotulo_index = parseInt(rotulo_index);
+                // Rótulo apontando para endereço numérico ou outro rótulo
+                rotulo_index = linha[1];
+                if (isNaN(parseInt(rotulo_index))) {
+                    // Rótulo a resolver
+                } else {
+                    rotulo_index = parseInt(rotulo_index);
+                }
             }
+        
         } else {
             opcode = linha[0];
             operando = linha[1];
