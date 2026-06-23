@@ -1,6 +1,6 @@
 import styles from './styles.module.css'
 import { useEffect, useState } from 'react'
-import {uc} from '../../../testes/teste3' // instância exportada
+import { uc1, uc2, uc3 } from "../../../testes/teste3";
 import ALU from './ALU';
 
 const estadoInicial = {
@@ -78,10 +78,10 @@ function BancoDeRegistradores({ estado , customStyle}) {
 
 export default function Simulation() {
     const [estado, setEstado] = useState(estadoInicial);
-    const [ativo, setAtivo] = useState(null);
+    const [ativo, setAtivo] = useState(1);
 
     useEffect(() => {
-        uc.setCallback((novoEstado) => {
+        uc1.setCallback((novoEstado) => {
             setEstado(novoEstado);
         });
     }, []);
@@ -90,15 +90,15 @@ export default function Simulation() {
         <div className={styles.simBox}>
             <div className={styles.selectProcesser}>
                 <button className={`${styles.botao} ${ativo === 1 ? styles.ativo : ""}`} onClick={() => setAtivo(1)}>
-                    Mic 1
+                    Mac 1
                 </button>
 
                 <button className={`${styles.botao} ${ativo === 2 ? styles.ativo : ""}`} onClick={() => setAtivo(2)}>
-                    Mic 2
+                    Mac 2
                 </button>
 
                 <button className={`${styles.botao} ${ativo === 3 ? styles.ativo : ""}`} onClick={() => setAtivo(3)}>
-                    Mic 3
+                    Mac 3
                 </button>
             </div>
             <div className={styles.simulation}>

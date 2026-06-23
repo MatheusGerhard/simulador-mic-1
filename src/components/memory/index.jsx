@@ -3,7 +3,7 @@ import MemoryDisplay from "./memoryDisplay";
 import styles from "./styles.module.css";
 import memoria from "../../../mac1/componentes/memory";
 import clock from "../../../testes/teste3";
-import { uc } from "../../../testes/teste3";
+import { uc1, uc2, uc3 } from "../../../testes/teste3";
 import { executa } from "../../../testes/teste3";
 
 export default function Memory() {
@@ -29,7 +29,7 @@ export default function Memory() {
 
  
     function resetComponents(){
-        uc.reset();
+        uc1.reset();
         clock.resetClock();
 
     }
@@ -41,7 +41,7 @@ export default function Memory() {
     }
 
     function initProgram() {
-        executa(clock, uc);
+        executa(clock, uc1);
         setIsRunning(true);
     }
     function pauseProgram() {
