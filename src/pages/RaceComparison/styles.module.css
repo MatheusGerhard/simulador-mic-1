@@ -1,0 +1,344 @@
+.page {
+    width: min(1500px, calc(100vw - 32px));
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    font-family: "Roboto Mono", monospace;
+}
+
+.controlBand {
+    display: grid;
+    grid-template-columns: minmax(320px, 460px) 1fr;
+    gap: 14px;
+    align-items: stretch;
+}
+
+.editor,
+.controls,
+.processorLane {
+    border: 1px solid var(--gray-600);
+    border-radius: 8px;
+    background-color: var(--gray-800);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.22);
+}
+
+.editor {
+    display: flex;
+    flex-direction: column;
+    min-height: 210px;
+    overflow: hidden;
+}
+
+.editorHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--gray-600);
+    background-color: var(--gray-900);
+    color: var(--white);
+}
+
+.editorHeader h1 {
+    font-size: 18px;
+    font-weight: 800;
+}
+
+.editorHeader span {
+    color: #bfdbfe;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.textarea {
+    flex: 1;
+    resize: vertical;
+    min-height: 154px;
+    border: 0;
+    outline: none;
+    background-color: #111827;
+    color: #f8fafc;
+    padding: 14px;
+    font-family: "Roboto Mono", monospace;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-content: flex-start;
+    padding: 14px;
+}
+
+.controls button,
+.speedControl,
+.cacheControl {
+    min-height: 44px;
+    border: 1px solid var(--gray-900);
+    border-radius: 8px;
+    background-color: var(--gray-600);
+    color: var(--white);
+    font-family: "Roboto Mono", monospace;
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.controls button {
+    min-width: 94px;
+    cursor: pointer;
+    padding: 0 14px;
+}
+
+.controls button:hover,
+.activeButton {
+    background-color: var(--blue-700);
+}
+
+.speedControl,
+.cacheControl {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 10px;
+}
+
+.speedControl span,
+.cacheControl span {
+    color: #dbeafe;
+}
+
+.speedControl input,
+.cacheControl input {
+    width: 86px;
+    border: 1px solid #475569;
+    border-radius: 6px;
+    background-color: #111827;
+    color: var(--white);
+    padding: 8px;
+    font-family: "Roboto Mono", monospace;
+}
+
+.error {
+    width: 100%;
+    border: 1px solid #991b1b;
+    border-radius: 8px;
+    background-color: #450a0a;
+    color: #fecaca;
+    padding: 10px;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.raceBoard {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.processorLane {
+    border-left: 6px solid var(--lane-accent);
+    overflow: hidden;
+}
+
+.laneHeader {
+    display: grid;
+    grid-template-columns: minmax(180px, 1fr) minmax(360px, 1.4fr);
+    gap: 12px;
+    align-items: center;
+    padding: 14px;
+    background-color: #1f2937;
+}
+
+.laneHeader h2 {
+    color: var(--white);
+    font-size: 20px;
+    font-weight: 900;
+}
+
+.laneHeader p {
+    margin-top: 6px;
+    color: #cbd5e1;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.metricGrid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(110px, 1fr));
+    gap: 8px;
+}
+
+.metric {
+    min-height: 52px;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    background-color: #111827;
+    padding: 8px 10px;
+}
+
+.metric span {
+    display: block;
+    color: #94a3b8;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.metric strong {
+    display: block;
+    margin-top: 6px;
+    color: var(--white);
+    font-size: 16px;
+    font-weight: 900;
+    overflow-wrap: anywhere;
+}
+
+.trackScroller {
+    overflow-x: auto;
+    background-color: #111827;
+}
+
+.track {
+    min-height: 124px;
+    display: flex;
+    align-items: center;
+    gap: 26px;
+    padding: 18px;
+}
+
+.instructionNode,
+.emptyNode {
+    position: relative;
+    flex: 0 0 132px;
+    min-height: 72px;
+    border: 2px solid #475569;
+    border-radius: 8px;
+    background-color: #f8fafc;
+    color: #111827;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.instructionNode:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: calc(100% + 2px);
+    width: 24px;
+    height: 3px;
+    background-color: #94a3b8;
+}
+
+.instructionNode strong {
+    font-size: 14px;
+    font-weight: 900;
+    line-height: 1.2;
+    overflow-wrap: anywhere;
+}
+
+.instructionNode span {
+    color: #334155;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.runningNode {
+    border-color: var(--lane-accent);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--lane-accent) 22%, transparent);
+}
+
+.emptyNode {
+    flex-basis: 160px;
+    border-style: dashed;
+    background-color: #e2e8f0;
+    color: #475569;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.cachePanel {
+    border-top: 1px solid #334155;
+    background-color: #0f172a;
+    padding: 12px 14px 14px;
+}
+
+.cachePanel h3 {
+    color: var(--white);
+    font-size: 14px;
+    font-weight: 900;
+    margin-bottom: 10px;
+}
+
+.cacheUnavailable {
+    border: 1px dashed #475569;
+    border-radius: 8px;
+    color: #cbd5e1;
+    background-color: #111827;
+    padding: 10px;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.cacheTableWrapper {
+    overflow-x: auto;
+}
+
+.cacheTable {
+    width: 100%;
+    border-collapse: collapse;
+    color: var(--white);
+    font-size: 12px;
+}
+
+.cacheTable th,
+.cacheTable td {
+    border: 1px solid #334155;
+    padding: 8px 10px;
+    text-align: left;
+    vertical-align: top;
+}
+
+.cacheTable th {
+    color: #bfdbfe;
+    background-color: #111827;
+    font-size: 11px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.cacheTable td:last-child {
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 900px) {
+    .controlBand,
+    .laneHeader {
+        grid-template-columns: 1fr;
+    }
+
+    .metricGrid {
+        grid-template-columns: repeat(2, minmax(110px, 1fr));
+    }
+}
+
+@media (max-width: 560px) {
+    .page {
+        width: calc(100vw - 20px);
+    }
+
+    .controls button {
+        flex: 1 1 120px;
+    }
+
+    .metricGrid {
+        grid-template-columns: 1fr;
+    }
+}

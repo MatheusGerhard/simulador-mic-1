@@ -88,10 +88,10 @@ class Clock {
     }
 
     resetClock() {      
+        this.pausar();
         this.subciclo = 1;
         this.totalCiclos = 0;
         this.emExecucao = false;
-        this.timerId = null;
         if (this.onCicloChange) this.onCicloChange(this.totalCiclos);
     }
 }

@@ -5,7 +5,9 @@
 // Envia: O dado ou instrução presente no endereço solicitado para o MDR.
 
 
-class Memory {
+import { clearMacroInstructionCatalog, logMemoryWrite } from "../../src/services/simulationLog.js";
+
+export class Memory {
     constructor(size = 4096) {
         this.data = new Array(size).fill("0000000000000000");
     }
@@ -17,15 +19,20 @@ class Memory {
 
     write(address, value) {
         address = parseInt(address,2);
+        const previousValue = this.data[address];
         this.data[address] = value;
+        logMemoryWrite(address, previousValue, value);
         console.log(`RAM: Escreveu ${value} no endereço ${address}`);
     }
     writeMontador(address, value) {
+        const previousValue = this.data[address];
         this.data[address] = value;
+        logMemoryWrite(address, previousValue, value);
         console.log(`RAM: Escreveu ${value} no endereço ${address}`);
     }
     clearMemory(){
         this.data = new Array(this.data.length).fill("0000000000000000");
+        clearMacroInstructionCatalog();
     }
 
     preencheInstrucoes(microinstrucoes, macroinstrucoes) {

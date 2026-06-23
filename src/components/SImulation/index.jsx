@@ -4,6 +4,28 @@ import { uc1, uc2, uc3 } from "../../../testes/teste3";
 import ALU from './ALU';
 import { useMac } from '../../context/MacContext';
 
+const DEFAULT_CACHE_SIZE = 3;
+const CONTROL_UNITS = {
+    mac1: uc1,
+    mac2: uc2,
+    mac3: uc3,
+};
+
+function normalizeCacheSize(size) {
+    const numericSize = Number.parseInt(size, 10);
+    return Number.isFinite(numericSize) && numericSize >= 1
+        ? numericSize
+        : DEFAULT_CACHE_SIZE;
+}
+
+function readCacheSnapshot(controlUnit) {
+    return controlUnit?.cache?.getSnapshot?.() ?? null;
+}
+
+function formatCacheCell(value) {
+    return value === null || value === undefined || value === "" ? "-" : value;
+}
+
 const estadoInicial = {
     subciclo: 1, ciclos: 0,
     mir: '-', mpc: '0',
@@ -77,36 +99,70 @@ function BancoDeRegistradores({ estado , customStyle}) {
     );
 }
 
+function CacheContent({ snapshot }) {
+    const hasCache = Array.isArray(snapshot);
+
+    return (
+        <section className={styles.cachePanel}>
+            <h2>Conteudo da Cache</h2>
+
+            {!hasCache ? (
+                <div className={styles.cacheUnavailable}>Cache nao disponivel</div>
+            ) : (
+                <div className={styles.cacheTableWrapper}>
+                    <table className={styles.cacheTable}>
+                        <thead>
+                            <tr>
+                                <th>Linha</th>
+                                <th>Endereco</th>
+                                <th>Valor</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {snapshot.map((line) => (
+                                <tr key={line.index}>
+                                    <td>{line.index}</td>
+                                    <td>{formatCacheCell(line.addressRange ?? line.address)}</td>
+                                    <td>{formatCacheCell(line.value)}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            )}
+        </section>
+    );
+}
+
 export default function Simulation() {
     const [estado, setEstado] = useState(estadoInicial);
+    const [cacheSize, setCacheSize] = useState(uc2.cacheSize ?? DEFAULT_CACHE_SIZE);
+    const [cacheSnapshot, setCacheSnapshot] = useState(() =>
+        readCacheSnapshot(CONTROL_UNITS.mac1),
+    );
     const { activeMac, setActiveMac } = useMac();
-    const ucs = {
-        mac1: uc1,
-        mac2: uc2,
-        mac3: uc3,
-    };
 
     useEffect(() => {
-        let uc;
+        const uc = CONTROL_UNITS[activeMac];
 
-        switch (activeMac) {
-            case "mac1":
-                uc = uc1;
-                break;
-            case "mac2":
-                uc = uc2;
-                break;
-            case "mac3":
-                uc = uc3;
-                break;
-            default:
-                return;
-        }
+        if (!uc) return;
+
+        setCacheSnapshot(readCacheSnapshot(uc));
 
         uc.setCallback((novoEstado) => {
             setEstado(novoEstado);
+            setCacheSnapshot(readCacheSnapshot(uc));
         });
     }, [activeMac]);
+
+    useEffect(() => {
+        uc2.setCacheSize(cacheSize);
+        uc3.setCacheSize(cacheSize);
+    }, [cacheSize]);
+
+    useEffect(() => {
+        setCacheSnapshot(readCacheSnapshot(CONTROL_UNITS[activeMac]));
+    }, [activeMac, cacheSize]);
 
     return (
         <div className={styles.simBox}>
@@ -131,6 +187,18 @@ export default function Simulation() {
                 >
                     Mac 3
                 </button>
+                <label className={styles.cacheControl}>
+                    <span>Cache</span>
+                    <input
+                        min="1"
+                        step="1"
+                        type="number"
+                        value={cacheSize}
+                        onChange={(event) =>
+                            setCacheSize(normalizeCacheSize(event.target.value))
+                        }
+                    />
+                </label>
             </div>
             <div className={styles.simulation}>
 
@@ -158,6 +226,7 @@ export default function Simulation() {
                 <COMPONENTE label="Shifter" value={estado.shifter} className={styles.shifter}/>
 
             </div>
+            <CacheContent snapshot={cacheSnapshot} />
         </div>
     );
 }

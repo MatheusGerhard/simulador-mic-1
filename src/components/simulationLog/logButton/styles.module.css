@@ -1,0 +1,31 @@
+.logButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 54px;
+    min-width: 82px;
+    padding: 0 18px;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #1e3a5f, #2c5680);
+    box-shadow: 0 8px 10px rgba(0, 0, 0, 0.25);
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.logButton:hover,
+.active {
+    background: linear-gradient(135deg, #001836, #1f64a8);
+}
+
+.logButton:active {
+    transform: translateY(1px);
+}
+
+.text {
+    color: #ffffff;
+    font-family: "Roboto Mono", monospace;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1;
+}

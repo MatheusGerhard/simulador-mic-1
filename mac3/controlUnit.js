@@ -18,14 +18,25 @@ import Mmux from '../mac1/componentes/mmux.js';
 import MSL from '../mac1/componentes/msl.js';
 import Registers from '../mac1/componentes/registers.js';
 import Shifter from '../mac1/componentes/shifter.js';
+import { logInstructionExecution } from '../src/services/simulationLog.js';
 
+const DEFAULT_CACHE_SIZE = 3;
+
+function normalizeCacheSize(size) {
+    const numericSize = Number.parseInt(size, 10);
+    return Number.isFinite(numericSize) && numericSize >= 1
+        ? numericSize
+        : DEFAULT_CACHE_SIZE;
+}
 
 class ControlUnit {
-    constructor() {
+    constructor(cacheSize = DEFAULT_CACHE_SIZE) {
+        this.cacheSize = normalizeCacheSize(cacheSize);
+
         // classes
         this.alu = new ArithmeticLogicUnit();
         this.amux = new Amux();
-        this.cache = new Cache();
+        this.cache = new Cache(this.cacheSize);
         this.cs = new ControlStore();
         this.increm = new Increment();
         this.decC = new DecoderC();
@@ -54,7 +65,7 @@ class ControlUnit {
         // pipeline
         this.memoryBusy = 0;
         this.estagios = [];
-        this.reset = 0;
+        this.pipelineWarmup = 0;
         this.pipeline = {
             IF_ID: {mir: null},
             ID_EX: {mir: null},
@@ -64,26 +75,26 @@ class ControlUnit {
     }
 
     // O loop principal (do final para o início para evitar atropelos)
-    rodarCiclo(ciclos) {
+    rodarCiclo(sc,ciclos) {
         // ciclos iniciais
-        switch(this.reset) {
+        switch(this.pipelineWarmup) {
             case(0):
-            this.reset++;
+            this.pipelineWarmup++;
             this.estagios = [1];
             break;
 
             case(1):
-            this.reset++;
+            this.pipelineWarmup++;
             this.estagios = [1,2];
             break;
 
             case(2):
-            this.reset++;
+            this.pipelineWarmup++;
             this.estagios = [1,2,3];
             break;
 
             case(3):
-            this.reset++;
+            this.pipelineWarmup++;
             this.estagios = [1,2,3,4];
             break;
 
@@ -100,7 +111,7 @@ class ControlUnit {
         }
 
         if (this.estagios.includes(1)) {
-            this.estagioIF();
+            this.estagioIF(sc, ciclos);
         }
         if (this.estagios.includes(2)) {
             this.estagioID();
@@ -117,13 +128,23 @@ class ControlUnit {
 
 
         if (this.onEstadoChange) {
-            this.onEstadoChange(this.getEstado(null, ciclos));
+            this.onEstadoChange(this.getEstado(sc, ciclos));
         }
         return true;
     }
 
     // IF (Instruction Fetch): Busca a instrução.
-    estagioIF() {
+    estagioIF(sc, ciclos) {
+        const programCounter = this.regs.read(0);
+        logInstructionExecution(programCounter, {
+            processor: "MAC-3",
+            executionKey: `${ciclos}:${sc}`,
+            cycle: ciclos * 4 + sc - 1,
+            cacheHits: this.hits,
+            cacheMisses: this.misses,
+            word: this.ram.read(programCounter),
+        });
+
         const micro = this.cs.read(this.mpc.read());
 
         const mirInstance = new MicroInstructionRegister();
@@ -191,7 +212,7 @@ class ControlUnit {
         this.msl.calcula();
 
         if (this.msl.read()==1) {
-            this.reset = 0;
+            this.pipelineWarmup = 0;
         }
 
         this.increm.write(this.mpc.read());
@@ -250,7 +271,7 @@ class ControlUnit {
         // classes
         this.alu = new ArithmeticLogicUnit();
         this.amux = new Amux();
-        this.cache = new Cache();
+        this.cache = new Cache(this.cacheSize);
         this.cs = new ControlStore();
         this.increm = new Increment();
         this.decC = new DecoderC();
@@ -273,10 +294,31 @@ class ControlUnit {
         this.ramL = 0;
         this.ramE = 0;
         this.hits = 0;
-        this.misses = 0;        
+        this.misses = 0;
+
+        // pipeline
+        this.memoryBusy = 0;
+        this.estagios = [];
+        this.pipelineWarmup = 0;
+        this.pipeline = {
+            IF_ID: {mir: null},
+            ID_EX: {mir: null},
+            EX_MEM: {mir: null},
+            MEM_WB: {mir: null}
+        };
+
+        if (this.onEstadoChange) {
+            this.onEstadoChange(this.getEstado(1,0));
+        }
     }
 
     // Funções de integração com a interface (React)
+    setCacheSize(cacheSize) {
+        this.cacheSize = normalizeCacheSize(cacheSize);
+        this.cache = new Cache(this.cacheSize);
+        this.cache.ram = this.ram;
+    }
+
     setCallback(callback) {
         this.onEstadoChange = callback;
     }
