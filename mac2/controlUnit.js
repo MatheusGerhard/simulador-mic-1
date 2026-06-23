@@ -180,7 +180,6 @@ class ControlUnit {
         this.shifter = new Shifter();
 
         // variáveis
-        this.onEstadoChange = null;
         this.micro = null;
         this.ramL = 0;
         this.ramE = 0;

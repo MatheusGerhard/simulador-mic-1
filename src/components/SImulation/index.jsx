@@ -133,7 +133,6 @@ export default function Simulation() {
                 </button>
             </div>
             <div className={styles.simulation}>
-                {activeMac}
 
                 <BancoDeRegistradores estado={estado}/>
             

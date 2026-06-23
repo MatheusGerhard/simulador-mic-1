@@ -6,7 +6,8 @@ O projeto é dividido em quatro camadas independentes:
 ```
 processadorsim/
 ├── mac1/           # Unidade de Controle + componentes do datapath
-├── processador/    # Memória principal (RAM compartilhada) e registradores
+├── mac2/           # Mac1 + Cache
+├── mac3/           # Mac2 + Pipeline
 ├── montador/       # Assembler de dois passes (tokenizador → código de máquina)
 └── src/            # Interface React (visualização e controle)
 ```
