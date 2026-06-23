@@ -19,6 +19,15 @@ import Registers from './componentes/registers.js';
 import Shifter from './componentes/shifter.js';
 import { logInstructionExecution } from '../src/services/simulationLog.js';
 
+const LOCAL_ADDRESS_LABELS = new Set(["lodl1", "stol1", "addl1", "subl1"]);
+
+function andWords(left, right) {
+    return left
+        .split("")
+        .map((bit, index) => (bit == "1" && right[index] == "1" ? "1" : "0"))
+        .join("");
+}
+
 
 class ControlUnit {
     constructor() {
@@ -82,7 +91,11 @@ class ControlUnit {
                 this.decC.write(this.mir.read("c"));
 
                 const valorA = this.regs.read(this.decA.read());
-                const valorB = this.regs.read(this.decB.read());
+                let valorB = this.regs.read(this.decB.read());
+
+                if (LOCAL_ADDRESS_LABELS.has(this.mir.label)) {
+                    valorB = andWords(valorB, this.regs.read(8));
+                }
 
                 this.latA.write(valorA);
                 this.latB.write(valorB);

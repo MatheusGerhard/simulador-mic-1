@@ -29,6 +29,15 @@ function normalizeCacheSize(size) {
         : DEFAULT_CACHE_SIZE;
 }
 
+const LOCAL_ADDRESS_LABELS = new Set(["lodl1", "stol1", "addl1", "subl1"]);
+
+function andWords(left, right) {
+    return left
+        .split("")
+        .map((bit, index) => (bit == "1" && right[index] == "1" ? "1" : "0"))
+        .join("");
+}
+
 class ControlUnit {
     constructor(cacheSize = DEFAULT_CACHE_SIZE) {
         this.cacheSize = normalizeCacheSize(cacheSize);
@@ -80,6 +89,8 @@ class ControlUnit {
                     });
                 }
                 this.micro = this.cs.read(endereco);
+                if (this.micro == null || this.micro == undefined) return false;
+
                 this.mir.write(this.micro);
                 console.log("MIR - "+this.mpc.read()+": "+this.mir.label.toUpperCase());
 
@@ -91,8 +102,15 @@ class ControlUnit {
                 this.decB.write(this.mir.read("b"));
                 this.decC.write(this.mir.read("c"));
 
-                this.latA.write(this.regs.read(this.decA.read()));
-                this.latB.write(this.regs.read(this.decB.read()));
+                const valorA = this.regs.read(this.decA.read());
+                let valorB = this.regs.read(this.decB.read());
+
+                if (LOCAL_ADDRESS_LABELS.has(this.mir.label)) {
+                    valorB = andWords(valorB, this.regs.read(8));
+                }
+
+                this.latA.write(valorA);
+                this.latB.write(valorB);
 
                 console.log("lA: "+this.latA.read());
                 console.log("lB: "+this.latB.read());
