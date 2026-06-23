@@ -5,8 +5,17 @@ import memoria from "../../../mac1/componentes/memory";
 import clock from "../../../testes/teste3";
 import { uc1, uc2, uc3 } from "../../../testes/teste3";
 import { executa } from "../../../testes/teste3";
+import { useMac } from "../../context/MacContext";
 
 export default function Memory() {
+    const { activeMac } = useMac();
+    const ucs = {
+        mac1: uc1,
+        mac2: uc2,
+        mac3: uc3,
+    };
+    const ucAtual = ucs[activeMac];
+
     const [memoryNum, setMemoryNum] = useState([1, 0, 0]);
     const [isRunning, setIsRunning] = useState(false);
 
@@ -29,7 +38,7 @@ export default function Memory() {
 
  
     function resetComponents(){
-        uc1.reset();
+        ucAtual.reset();
         clock.resetClock();
 
     }
@@ -41,7 +50,7 @@ export default function Memory() {
     }
 
     function initProgram() {
-        executa(clock, uc1);
+        executa(clock, ucAtual);
         setIsRunning(true);
     }
     function pauseProgram() {

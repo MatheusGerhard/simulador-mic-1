@@ -173,7 +173,6 @@ class ControlUnit {
         // classes
         this.alu = new ArithmeticLogicUnit();
         this.amux = new Amux();
-        this.cache = new Cache();
         this.cs = new ControlStore();
         this.increm = new Increment();
         this.decC = new DecoderC();

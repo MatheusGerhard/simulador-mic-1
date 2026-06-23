@@ -3,6 +3,7 @@ import Header from './components/Header';
 import Instructions from './components/instructions';
 import Memory from './components/memory';
 import Simulation from './components/SImulation';
+import { MacProvider } from './context/MacContext';
 
 export default function App() {
 
@@ -10,9 +11,11 @@ export default function App() {
     <>
       <Header/>
       <main>
-        <Memory/>
-        <Simulation/>
-        <Instructions/>
+        <MacProvider>
+          <Memory/>
+          <Simulation/>
+          <Instructions/>
+        </MacProvider>
       </main>
     </>
   )

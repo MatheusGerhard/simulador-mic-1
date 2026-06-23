@@ -2,6 +2,7 @@ import styles from './styles.module.css'
 import { useEffect, useState } from 'react'
 import { uc1, uc2, uc3 } from "../../../testes/teste3";
 import ALU from './ALU';
+import { useMac } from '../../context/MacContext';
 
 const estadoInicial = {
     subciclo: 1, ciclos: 0,
@@ -78,30 +79,61 @@ function BancoDeRegistradores({ estado , customStyle}) {
 
 export default function Simulation() {
     const [estado, setEstado] = useState(estadoInicial);
-    const [ativo, setAtivo] = useState(1);
+    const { activeMac, setActiveMac } = useMac();
+    const ucs = {
+        mac1: uc1,
+        mac2: uc2,
+        mac3: uc3,
+    };
 
     useEffect(() => {
-        uc1.setCallback((novoEstado) => {
+        let uc;
+
+        switch (activeMac) {
+            case "mac1":
+                uc = uc1;
+                break;
+            case "mac2":
+                uc = uc2;
+                break;
+            case "mac3":
+                uc = uc3;
+                break;
+            default:
+                return;
+        }
+
+        uc.setCallback((novoEstado) => {
             setEstado(novoEstado);
         });
-    }, []);
+    }, [activeMac]);
 
     return (
         <div className={styles.simBox}>
             <div className={styles.selectProcesser}>
-                <button className={`${styles.botao} ${ativo === 1 ? styles.ativo : ""}`} onClick={() => setAtivo(1)}>
+                <button
+                    onClick={() => setActiveMac("mac1")}
+                    className={`${styles.botao} ${activeMac === "mac1" ? styles.ativo : ""}`}
+                >
                     Mac 1
                 </button>
 
-                <button className={`${styles.botao} ${ativo === 2 ? styles.ativo : ""}`} onClick={() => setAtivo(2)}>
+                <button
+                    onClick={() => setActiveMac("mac2")}
+                    className={`${styles.botao} ${activeMac === "mac2" ? styles.ativo : ""}`}
+                >
                     Mac 2
                 </button>
 
-                <button className={`${styles.botao} ${ativo === 3 ? styles.ativo : ""}`} onClick={() => setAtivo(3)}>
+                <button
+                    onClick={() => setActiveMac("mac3")}
+                    className={`${styles.botao} ${activeMac === "mac3" ? styles.ativo : ""}`}
+                >
                     Mac 3
                 </button>
             </div>
             <div className={styles.simulation}>
+                {activeMac}
 
                 <BancoDeRegistradores estado={estado}/>
             
