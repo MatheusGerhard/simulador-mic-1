@@ -39,7 +39,7 @@ const estadoInicial = {
 
     //novos
     zero: '0', um: '0', menosUm: '0', am: '0', sm: '0',
-    regA: '0', regB: '0', regC: '0', regD: '0', regE: '0', regF: '0000000000000000',
+    regA: '0', regB: '0', regC: '0', regD: '0', regE: '0', regF: '0',
     
     decA: '0', decB: '0', decC: '0'
     
@@ -194,6 +194,7 @@ export default function Simulation() {
                         step="1"
                         type="number"
                         value={cacheSize}
+                        className={styles.cacheControlInput}
                         onChange={(event) =>
                             setCacheSize(normalizeCacheSize(event.target.value))
                         }

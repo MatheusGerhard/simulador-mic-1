@@ -35,6 +35,17 @@ main{
     align-items: center;
 }
 
+.sla{
+    padding-top: 0.75rem;
+    padding-bottom: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: flex-start;
+    justify-content: space-around;
+    overflow-x: hidden;
+}
+
 .viewSwitch {
     flex: 0 0 calc(100% - 32px);
     display: flex;
@@ -61,13 +72,17 @@ main{
     background-color: var(--blue-700);
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1068px) {
     main,
     .simulatorLayout,
     .raceLayout {
         flex-direction: column;
         align-items: center;
         gap: 10px;
+    }
+
+    .sla{
+        flex-direction: column-reverse;
     }
 
     .viewSwitch {

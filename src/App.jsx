@@ -33,11 +33,11 @@ export default function App() {
           {activeView === "race" ? (
             <RaceComparison/>
           ) : (
-            <>
+            <div className='sla'>
               <Memory/>
               <Simulation/>
               <Instructions/>
-            </>
+            </div>
           )}
 
           <SimulationLog/>
