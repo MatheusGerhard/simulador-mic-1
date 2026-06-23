@@ -18,14 +18,25 @@ import Mmux from '../mac1/componentes/mmux.js';
 import MSL from '../mac1/componentes/msl.js';
 import Registers from '../mac1/componentes/registers.js';
 import Shifter from '../mac1/componentes/shifter.js';
+import { logInstructionExecution } from '../src/services/simulationLog.js';
 
+const DEFAULT_CACHE_SIZE = 3;
+
+function normalizeCacheSize(size) {
+    const numericSize = Number.parseInt(size, 10);
+    return Number.isFinite(numericSize) && numericSize >= 1
+        ? numericSize
+        : DEFAULT_CACHE_SIZE;
+}
 
 class ControlUnit {
-    constructor() {
+    constructor(cacheSize = DEFAULT_CACHE_SIZE) {
+        this.cacheSize = normalizeCacheSize(cacheSize);
+
         // classes
         this.alu = new ArithmeticLogicUnit();
         this.amux = new Amux();
-        this.cache = new Cache();
+        this.cache = new Cache(this.cacheSize);
         this.cs = new ControlStore();
         this.increm = new Increment();
         this.decC = new DecoderC();
@@ -50,12 +61,25 @@ class ControlUnit {
         this.ramE = 0;
         this.hits = 0;
         this.misses = 0;
+
     }
 
     rodarCiclo(sc,ciclos) {
         switch(sc) {
             case(1): // Busca microinstrução
-                this.micro = this.cs.read(this.mpc.read());
+                var endereco = this.mpc.read();
+                if (endereco === 0) {
+                    var programCounter = this.regs.read(0);
+                    logInstructionExecution(programCounter, {
+                        processor: "MAC-2",
+                        executionKey: `${ciclos}:${sc}`,
+                        cycle: ciclos,
+                        cacheHits: this.hits,
+                        cacheMisses: this.misses,
+                        word: this.ram.read(programCounter),
+                    });
+                }
+                this.micro = this.cs.read(endereco);
                 this.mir.write(this.micro);
                 console.log("MIR - "+this.mpc.read()+": "+this.mir.label.toUpperCase());
 
@@ -82,6 +106,9 @@ class ControlUnit {
                         let data = this.cache.read(this.mar.read());
                         if (data == null) {
                             this.misses++;
+                            if (this.onEstadoChange) {
+                                this.onEstadoChange(this.getEstado(sc,ciclos));
+                            }
                             return false;
                         }
                         else {
@@ -161,7 +188,7 @@ class ControlUnit {
         // classes
         this.alu = new ArithmeticLogicUnit();
         this.amux = new Amux();
-        this.cache = new Cache();
+        this.cache = new Cache(this.cacheSize);
         this.cs = new ControlStore();
         this.increm = new Increment();
         this.decC = new DecoderC();
@@ -184,10 +211,20 @@ class ControlUnit {
         this.ramL = 0;
         this.ramE = 0;
         this.hits = 0;
-        this.misses = 0;        
+        this.misses = 0;
+
+        if (this.onEstadoChange) {
+            this.onEstadoChange(this.getEstado(1,0));
+        }
     }
 
     // Funções de integração com a interface (React)
+    setCacheSize(cacheSize) {
+        this.cacheSize = normalizeCacheSize(cacheSize);
+        this.cache = new Cache(this.cacheSize);
+        this.cache.ram = this.ram;
+    }
+
     setCallback(callback) {
         this.onEstadoChange = callback;
     }

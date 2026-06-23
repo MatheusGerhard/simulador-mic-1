@@ -38,8 +38,8 @@ export default function Memory() {
 
  
     function resetComponents(){
-        ucAtual.reset();
         clock.resetClock();
+        ucAtual.reset();
 
     }
 
@@ -47,6 +47,7 @@ export default function Memory() {
     function clearMemory() {
         memoria.clearMemory();
         resetComponents();
+        setIsRunning(false);
     }
 
     function initProgram() {

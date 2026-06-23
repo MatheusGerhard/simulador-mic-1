@@ -13,6 +13,9 @@ main{
     padding-top: 0.75rem;
     padding-bottom: 1rem;
     display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: flex-start;
     justify-content: space-around;
     overflow-x: hidden;
 }
@@ -22,6 +25,55 @@ main{
     justify-content: flex-end;
     gap: 10px;
   }
+}
+.simulatorLayout {
+    flex-direction: row;
+}
+
+.raceLayout {
+    flex-direction: column;
+    align-items: center;
+}
+
+.viewSwitch {
+    flex: 0 0 calc(100% - 32px);
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 2px;
+}
+
+.viewSwitch button {
+    min-height: 42px;
+    min-width: 132px;
+    border: 1px solid var(--gray-900);
+    border-radius: 8px;
+    background-color: var(--gray-700);
+    color: var(--white);
+    cursor: pointer;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 15px;
+    font-weight: 800;
+}
+
+.viewSwitch button:hover,
+.viewSwitch .active {
+    background-color: var(--blue-700);
+}
+
+@media (max-width: 768px) {
+    main,
+    .simulatorLayout,
+    .raceLayout {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .viewSwitch {
+        width: calc(100vw - 20px);
+        flex-basis: auto;
+    }
 }
 
 :root {

@@ -1,5 +1,6 @@
 import detecta_tipo_instrucao from "./macroinstrucoes.js";
 import memoria from "../mac1/componentes/memory.js";
+import { registerMacroInstructions } from "../src/services/simulationLog.js";
 
 class Montador{
     
@@ -183,6 +184,7 @@ class Montador{
     }
 
     preencherMemoria(){
+        registerMacroInstructions(this.macroinstrucoes);
         memoria.preencheInstrucoes(this.microinstrucoes, this.macroinstrucoes);
     }
 

@@ -5,10 +5,12 @@
 // Envia: O dado ou instrução presente no endereço solicitado para o MDR.
 
 import memoria from "../../mac1/componentes/memory.js";
+import { logCacheHit, logCacheMiss } from "../../src/services/simulationLog.js";
 
 class Cache {
-    constructor() {
-        this.size = 3
+    constructor(size = 3) {
+        const numericSize = Number.parseInt(size, 10);
+        this.size = Number.isFinite(numericSize) && numericSize >= 1 ? numericSize : 3;
         this.vbit = new Array(this.size).fill(0);
         this.tag = new Array(this.size).fill("0000000000"); // 1 bloco = 4 palavras
         this.bloc = Array.from({length: this.size}, () => new Array(4).fill("0000000000000000"));
@@ -26,6 +28,23 @@ class Cache {
         return null;
     }
 
+    getSnapshot() {
+        return this.bloc.map((values, index) => {
+            const valid = this.vbit[index] == 1;
+            const address = valid ? Number.parseInt(`${this.tag[index]}00`, 2) : null;
+
+            return {
+                index,
+                valid,
+                tag: valid ? this.tag[index] : null,
+                address,
+                addressRange: valid ? `${address}-${address + values.length - 1}` : null,
+                value: valid ? values.join(" | ") : null,
+                values: valid ? [...values] : [],
+            };
+        });
+    }
+
     // Recebe endereço e dado do MBR para RAM
     write (address, value) {
         const tag = address.slice(0, 10);
@@ -33,10 +52,12 @@ class Cache {
         const pos = this.check(address.slice(0, 10));
 
         if (pos != null) {
+            logCacheHit(address);
             this.bloc[pos][word] = value;
             console.log("bloco ja presente: pos("+pos+"), tag("+tag+") e word("+word+")");
         }
         else {
+            logCacheMiss(address);
             this.tag[this.p] = tag;
             this.bloc[this.p][word] = value;
             this.vbit[this.p] = 0;
@@ -57,11 +78,13 @@ class Cache {
 
         // cache hit
         if (pos != null) {
+            logCacheHit(address);
             data = this.bloc[pos][word]
             console.log("bloco presente: pos("+pos+"), tag("+tag+") e word("+word+")");
         }
         // cache miss
         else {
+            logCacheMiss(address);
             const bloco = [tag+"00", tag+"01", tag+"10", tag+"11"]
             // console.log(bloco[])
             this.tag[this.p] = tag;

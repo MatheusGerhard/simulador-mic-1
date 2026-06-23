@@ -1,0 +1,13 @@
+.container {
+    position: fixed;
+    left: 24px;
+    bottom: 24px;
+    z-index: 20;
+}
+
+@media (max-width: 768px) {
+    .container {
+        left: 12px;
+        bottom: 12px;
+    }
+}

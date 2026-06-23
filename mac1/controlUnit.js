@@ -17,6 +17,7 @@ import Mmux from './componentes/mmux.js';
 import MSL from './componentes/msl.js';
 import Registers from './componentes/registers.js';
 import Shifter from './componentes/shifter.js';
+import { logInstructionExecution } from '../src/services/simulationLog.js';
 
 
 class ControlUnit {
@@ -46,12 +47,26 @@ class ControlUnit {
         this.micro = null;
         this.ramL = 0;
         this.ramE = 0;
+        this.hits = 0;
+        this.misses = 0;
+
     }
 
     rodarCiclo(sc,ciclos) {
         switch(sc) {
             case(1): // Busca microinstrução
-                const endereco = this.mpc.read();
+                var endereco = this.mpc.read();
+                if (endereco === 0) {
+                    var programCounter = this.regs.read(0);
+                    logInstructionExecution(programCounter, {
+                        processor: "MAC-1",
+                        executionKey: `${ciclos}:${sc}`,
+                        cycle: ciclos,
+                        cacheHits: this.hits,
+                        cacheMisses: this.misses,
+                        word: this.ram.read(programCounter),
+                    });
+                }
                 this.micro = this.cs.read(endereco);
                 if (this.micro == null || this.micro == undefined) return false;
 
@@ -195,6 +210,11 @@ class ControlUnit {
         this.ramL = 0;
         this.ramE = 0;
         this.hits = 0;
+        this.misses = 0;
+
+        if (this.onEstadoChange) {
+            this.onEstadoChange(this.getEstado(1,0));
+        }
     }
 
     // Funções de integração com a interface (React)
