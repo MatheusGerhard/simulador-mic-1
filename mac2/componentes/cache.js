@@ -41,12 +41,12 @@ class Cache {
         const numericSize = Number.parseInt(size, 10);
         this.size = Number.isFinite(numericSize) && numericSize >= 1 ? numericSize : 3;
         this.vbit = new Array(this.size).fill(0);
-        this.tag = new Array(this.size).fill("0".repeat(ADDRESS_BITS - WORD_OFFSET_BITS));
+        this.tag  = new Array(this.size).fill("0".repeat(ADDRESS_BITS - WORD_OFFSET_BITS));
         this.bloc = Array.from(
             { length: this.size },
             () => new Array(WORDS_PER_BLOCK).fill("0000000000000000"),
         );
-        this.p = 0;
+        this.p   = 0;
         this.ram = memoria;
     }
 
@@ -56,29 +56,11 @@ class Cache {
                 return i;
             }
         }
-
         return null;
     }
 
-    getSnapshot() {
-        return this.bloc.map((values, index) => {
-            const valid = this.vbit[index] == 1;
-            const address = valid ? Number.parseInt(blockAddress(this.tag[index], 0), 2) : null;
-
-            return {
-                index,
-                valid,
-                tag: valid ? this.tag[index] : null,
-                address,
-                addressRange: valid ? `${address}-${address + values.length - 1}` : null,
-                value: valid ? values.join(" | ") : null,
-                values: valid ? [...values] : [],
-            };
-        });
-    }
-
     fillLine(pos, tag) {
-        this.tag[pos] = tag;
+        this.tag[pos]  = tag;
         this.vbit[pos] = 1;
 
         for (let i = 0; i < WORDS_PER_BLOCK; i++) {
@@ -86,21 +68,49 @@ class Cache {
         }
     }
 
+    getSnapshot() {
+        const emptyTag = "0".repeat(ADDRESS_BITS - WORD_OFFSET_BITS);
+
+        return this.bloc.map((values, index) => {
+            const valid = this.vbit[index] == 1;
+            const hasContent = valid || this.tag[index] !== emptyTag;
+            const address = hasContent ? Number.parseInt(blockAddress(this.tag[index], 0), 2) : null;
+
+            return {
+                index,
+                valid,
+                tag:          hasContent ? this.tag[index] : null,
+                address,
+                addressRange: hasContent ? `${address}-${address + values.length - 1}` : null,
+                value:        hasContent ? values.join(" | ") : null,
+                values:       hasContent ? [...values] : [],
+            };
+        });
+    }
+
     write(address, value) {
         const { normalizedAddress, tag, word } = splitAddress(address);
         let pos = this.check(tag);
 
         if (pos != null) {
+            // HIT: escreve no cache e na RAM simultaneamente (write-through)
+            this.bloc[pos][word] = value;
+            this.ram.write(normalizedAddress, value);
             logCacheHit(normalizedAddress);
-        } else {
-            logCacheMiss(normalizedAddress);
-            pos = this.p;
-            this.fillLine(pos, tag);
-            this.p = (this.p + 1) % this.size;
-        }
+            console.log(`Cache WT: hit escrita → linha ${pos} + RAM[${parseInt(normalizedAddress, 2)}] = ${value}`);
 
-        this.bloc[pos][word] = value;
-        this.ram.write(normalizedAddress, value);
+        } else {
+            // MISS: escreve na RAM e na palavra do cache, mas mantém vbit=0
+            // vbit=0 garante que o próximo read dará miss e carregará o bloco completo da RAM
+            pos = this.p;
+            this.p = (this.p + 1) % this.size;
+            this.tag[pos]  = tag;
+            this.vbit[pos] = 0;
+            this.bloc[pos][word] = value;
+            this.ram.write(normalizedAddress, value);
+            logCacheMiss(normalizedAddress);
+            console.log(`Cache WT: miss escrita → RAM[${parseInt(normalizedAddress, 2)}] = ${value}, cache linha ${pos} palavra ${word} = ${value} (vbit=0)`);
+        }
     }
 
     read(address) {
@@ -112,6 +122,7 @@ class Cache {
             return this.bloc[pos][word];
         }
 
+        // MISS leitura: flush se necessário, carrega bloco
         logCacheMiss(normalizedAddress);
         this.fillLine(this.p, tag);
         this.p = (this.p + 1) % this.size;

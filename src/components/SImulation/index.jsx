@@ -114,6 +114,7 @@ function CacheContent({ snapshot }) {
                         <thead>
                             <tr>
                                 <th>Linha</th>
+                                <th>V</th>
                                 <th>Endereco</th>
                                 <th>Valor</th>
                             </tr>
@@ -122,6 +123,7 @@ function CacheContent({ snapshot }) {
                             {snapshot.map((line) => (
                                 <tr key={line.index}>
                                     <td>{line.index}</td>
+                                    <td>{line.valid ? "1" : "0"}</td>
                                     <td>{formatCacheCell(line.addressRange ?? line.address)}</td>
                                     <td>{formatCacheCell(line.value)}</td>
                                 </tr>
@@ -163,6 +165,16 @@ export default function Simulation() {
     useEffect(() => {
         setCacheSnapshot(readCacheSnapshot(CONTROL_UNITS[activeMac]));
     }, [activeMac, cacheSize]);
+
+    // Polling: garante que qualquer escrita no cache (inclusive manual) reflita na UI
+    useEffect(() => {
+        const uc = CONTROL_UNITS[activeMac];
+        if (!uc) return;
+        const interval = setInterval(() => {
+            setCacheSnapshot(readCacheSnapshot(uc));
+        }, 100);
+        return () => clearInterval(interval);
+    }, [activeMac]);
 
     return (
         <div className={styles.simBox}>

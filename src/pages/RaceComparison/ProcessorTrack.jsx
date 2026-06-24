@@ -50,6 +50,7 @@ function CacheContent({ hasCache, snapshot = [] }) {
                         <thead>
                             <tr>
                                 <th>Linha</th>
+                                <th>V</th>
                                 <th>Endereco</th>
                                 <th>Valor</th>
                             </tr>
@@ -58,6 +59,7 @@ function CacheContent({ hasCache, snapshot = [] }) {
                             {snapshot.map((line) => (
                                 <tr key={line.index}>
                                     <td>{line.index}</td>
+                                    <td>{line.valid ? "1" : "0"}</td>
                                     <td>{formatCacheCell(line.addressRange ?? line.address)}</td>
                                     <td>{formatCacheCell(line.value)}</td>
                                 </tr>

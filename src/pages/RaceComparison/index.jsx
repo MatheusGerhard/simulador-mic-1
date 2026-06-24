@@ -258,6 +258,22 @@ export default function RaceComparison() {
         lanes.forEach(stepLane);
     }
 
+    const [cacheSnapshots, setCacheSnapshots] = useState({});
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            if (!isReady) return;
+            const updated = {};
+            lanesRef.current.forEach((lane) => {
+                if (lane.controlUnit.cache) {
+                    updated[lane.processor] = lane.controlUnit.cache.getSnapshot();
+                }
+            });
+            setCacheSnapshots(updated);
+        }, 100);
+        return () => clearInterval(interval);
+    }, [isReady]);
+
     const snapshotByProcessor = new Map(
         snapshot.map((processorState) => [processorState.processor, processorState]),
     );
@@ -324,10 +340,7 @@ export default function RaceComparison() {
                         accent={processor.accent}
                         cacheSnapshot={
                             processor.usesCache
-                                ? laneByProcessor
-                                      .get(processor.name)
-                                      ?.controlUnit.cache?.getSnapshot?.() ??
-                                  emptyCacheSnapshot
+                                ? cacheSnapshots[processor.name] ?? emptyCacheSnapshot
                                 : null
                         }
                         hasCache={Boolean(processor.usesCache)}
