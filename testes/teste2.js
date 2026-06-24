@@ -135,8 +135,7 @@ async function executarPainel() {
             uc.setCallback((estado) => {
                 // Monitoramento inteligente pelo PC (Program Counter)
                 // Quando o PC passa da última instrução carregada, finaliza.
-                if (parseInt(estado.pc, 2) > programaSelecionado.fimPC) {
-                    // clock.pulso(uc);
+                if (parseInt(estado.pc, 2) > programaSelecionado.fimPC+2) {
                     clock.pausar();
                     console.log("\n=================================");
                     console.log("✔ Simulação finalizada com sucesso!");

@@ -66,75 +66,210 @@ class ControlUnit {
 
         // pipeline
         this.dh = 0;
-        this.dhchave = false;
+        this.dhOn = 0;
+        this.irTemp = null;
         this.memoryBusy = 0;
-        this.estagios = [];
         this.pipeline = {
             IF_ID: {ir: null},
             ID_EX: {mir: null},
-            EX_MEM: {mir: null},
-            MEM_WB: {mir: null}
+            EX_MA: {mir: null},
+            MA_WB: {mir: null}
         };
     }
 
 // O loop principal (do final para o início para evitar atropelos)
 rodarCiclo(ciclos) {
-    if (this.dh>0) {
+    this.estagioWB();
+    if (this.dhOn == 2) {
+    console.log("Data Hazzard "+this.dhOn+": "+this.dh);
         switch (this.dh) {
             case(1):
-                this.estagioWB();
                 this.dh--;
-                this.dhchave = false;
-                this.pipeline.MEM_WB.mir = null;
-                console.log("\n----- MEM -----");
+                this.dhOn = 0;
+                this.pipeline.MA_WB.mir = null;
+                console.log("\n----- MA -----");
                 console.log("----- EX -----");
                 console.log("----- ID -----");
                 console.log("----- IF -----");
                 break;
             case(2):
-                this.estagioWB();
-                this.estagioMEM();
+                this.estagioMA();
                 this.dh--;
-                this.pipeline.EX_MEM.mir = null;
+                this.pipeline.EX_MA.mir = null;
+                this.pipeline.ID_EX.mir = null;
+                console.log("\n----- EX -----");
+                console.log("----- ID -----");
+                console.log("----- IF -----");
+                break;
+        }
+    }
+    else if (this.dhOn == 4) {
+    console.log("Data Hazzard "+this.dhOn+": "+this.dh);
+        switch (this.dh) {
+            case(1):
+                this.pipeline.MA_WB.mir = null;
+                this.estagioMA();
+                this.estagioEX();
+                if(this.estagioID()) return true;
+                this.estagioIF();
+                this.dh--;
+                this.dhOn = 0;
+                break;
+            case(2):
+                this.estagioMA();
+                this.dh--;
+                this.pipeline.EX_MA.mir = null;
                 this.pipeline.ID_EX.mir = null;
                 console.log("\n----- EX -----");
                 console.log("----- ID -----");
                 console.log("----- IF -----");
                 break;
             case(3):
-                this.estagioWB();
-                this.estagioMEM();
+                this.estagioMA();
                 this.estagioEX();
                 this.dh--;
                 this.pipeline.ID_EX.mir = null;
                 console.log("----- ID -----");
                 console.log("----- IF -----");
                 break;
-            case(3):
-                this.estagioWB();
-                this.estagioMEM();
+            case(4):
+                this.estagioMA();
                 this.estagioEX();
-                this.estagioID();
+                if(this.estagioID()) return true;
+                this.pipeline.IF_ID.ir = null;
                 this.dh--;
                 console.log("----- IF -----");
                 break;
         }
     }
+    else if (this.dhOn == 11) {
+    console.log("Data Hazzard "+this.dhOn+": "+this.dh);
+        switch (this.dh) {
+            case(1):
+                this.pipeline.MA_WB.mir = null;
+                console.log("----- WB -----");
+                console.log("----- MA -----");
+                console.log("----- EX -----");
+                console.log("----- ID -----");
+                this.estagioID();
+                this.dh--;
+                this.dhOn = 0;
+                break;
+            case(2):
+                console.log("----- WB -----");
+                this.estagioMA();
+                this.pipeline.EX_MA.mir = null;
+                this.pipeline.IF_ID.ir = null;
+                this.dh--;
+                console.log("----- EX -----");
+                console.log("----- ID -----");
+                console.log("----- IF -----");
+                break;
+            case(3):
+                console.log("----- WB -----");
+                console.log("----- MA -----");
+                this.estagioEX();
+                this.pipeline.ID_EX.mir = null;
+                this.dh--;
+                console.log("----- ID -----");
+                console.log("----- IF -----");
+                break;
+            case(4):
+                this.pipeline.MA_WB.mir = null;
+                this.decI.write("1111111100100000");
+                console.log("----- MA -----");
+                console.log("----- EX -----");
+                if(this.estagioID()) return true;
+                this.dh--;
+                console.log("----- IF -----");
+                break;
+            case(5):
+                console.log("----- WB -----");
+                this.estagioMA();
+                this.pipeline.EX_MA.mir = null;
+                this.dh--;
+                console.log("----- EX -----");
+                console.log("----- ID -----");
+                console.log("----- IF -----");
+                break;
+            case(6):
+                console.log("----- WB -----");
+                console.log("----- MA -----");
+                this.estagioEX();
+                this.pipeline.ID_EX.mir = null;
+                this.dh--;
+                console.log("----- ID -----");
+                console.log("----- IF -----");
+                break;
+            case(7):
+                this.pipeline.MA_WB.mir = null;
+                this.irTemp = this.pipeline.IF_ID.ir;
+                this.decI.write("1111111100010000");
+                console.log("----- MA -----");
+                console.log("----- EX -----");
+                if(this.estagioID()) return true;
+                this.dh--;
+                console.log("----- IF -----");
+                break;
+            case(8):
+                console.log("----- WB -----");
+                this.estagioMA();
+                this.pipeline.EX_MA.mir = null;
+                this.dh--;
+                console.log("----- EX -----");
+                console.log("----- ID -----");
+                console.log("----- IF -----");
+                break;
+            case(9):
+                console.log("----- WB -----");
+                console.log("----- MA -----");
+                this.estagioEX();
+                this.pipeline.ID_EX.mir = null;
+                this.dh--;
+                console.log("----- ID -----");
+                console.log("----- IF -----");
+                break;
+            case(10):
+                this.pipeline.MA_WB.mir = null;
+                console.log("----- MA -----");
+                console.log("----- EX -----");
+                if(this.estagioID()) return true;
+                this.dh--;
+                console.log("----- IF -----");
+                break;
+            case(11):
+                console.log("----- WB -----");
+                this.estagioMA();
+                this.pipeline.EX_MA.mir = null;
+                this.pipeline.ID_EX.mir = null;
+                this.dh--;
+                console.log("----- EX -----");
+                console.log("----- ID -----");
+                console.log("----- IF -----");
+                break;
+        }
+    }
     else {
-        this.estagioWB();
-
         if (this.memoryBusy == 0) {
-            this.estagioMEM();
+            this.estagioMA();
             this.estagioEX();
             if(this.estagioID()) return true;
             this.estagioIF();
         }
         else if (this.memoryBusy == 1) {
-            this.estagioMEM();
+            this.estagioMA();
             this.estagioEX();
             if(this.estagioID()) return true;
             console.log("----- IF -----");
             console.log("Stall: Aguardando Cache...");
+            this.memoryBusy = 0;
+        }
+        else if (this.memoryBusy == 2) {
+            this.estagioMA();
+            this.estagioEX();
+            console.log("----- ID -----");
+            console.log("Stall: Aguardando Cache...");
+            console.log("----- IF -----");
             this.memoryBusy = 0;
         }
         else if (this.memoryBusy == 4) {
@@ -155,20 +290,24 @@ rodarCiclo(ciclos) {
 
     dataHazzard(mir) {
         if (mir!=null) {
-            // dependência de dados
-            if (this.pipeline.EX_MEM.mir!=null && ((mir.a == this.pipeline.EX_MEM.mir.c) || (mir.b == this.pipeline.EX_MEM.mir.c))) {
-                console.log("\n///// DATA HAZARD 1/////\n")
-
+            // 2 - dependência de dados
+            if (this.pipeline.EX_MA.mir!=null && ((mir.a == this.pipeline.EX_MA.mir.c) || (mir.b == this.pipeline.EX_MA.mir.c))) {
+                console.log("\n///// DATA HAZARD ///// Dependencia de dados /////\n")
                 this.dh = 2;
-                this.dhchave = true;
+                this.dhOn = 2;
                 return true;
             }
-            // escrita na memória - o mar precisa ficar estável
+            // 4 - escrita na memória - o mar precisa ficar estável
             else if (mir.wr == "1") { 
-                console.log("\n///// DATA HAZARD 2/////\n")
-
-                this.dh = 3;
-                this.dhchave = true;                
+                console.log("\n///// DATA HAZARD ///// Espere a escrita /////\n")
+                this.dh = 4;
+                this.dhOn = 4;                
+                return true;
+            }
+            else if (mir.label == "subd") { 
+                console.log("\n///// DATA HAZARD ///// Espere: múltiplos ciclos /////\n")
+                this.dh = 11;
+                this.dhOn = 11;                
                 return true;
             }
         }
@@ -185,6 +324,7 @@ rodarCiclo(ciclos) {
         if (data == null) {
             this.misses++;
             this.memoryBusy = 1;
+            this.pipeline.IF_ID = {ir: null};
             return;
         }
         else {
@@ -193,8 +333,9 @@ rodarCiclo(ciclos) {
             console.log("cache->mbr: "+this.mbr.read());
         }
 
-        // Escreve o IR
+        // Envia a instrução para o IR e DecodeI ao mesmo tempo
         this.regs.write(3, this.mbr.read());
+        this.decI.write(this.mbr.read());
 
         // incrementa o PC para apontar para a próxima instrução
         this.increm.write(parseInt(this.regs.read(0), 2));
@@ -212,13 +353,12 @@ rodarCiclo(ciclos) {
         if (!buffer || !buffer.ir) return;
         const ir = buffer.ir;
 
-        // envia essa instrução para o decoder
-        this.decI.write(this.mbr.read());
         // decodifica a instrução
         this.decI.decode();
         // envia para o mpc que vai apontar no cs
         this.mpc.write(this.decI.read())
 
+        // paga o instrução no cs e anota nos valores
         const micro = this.cs.read(this.mpc.read());
 
         // cria um objeto dessa instrução que será passada
@@ -226,11 +366,12 @@ rodarCiclo(ciclos) {
         mir.write(micro);
 
         console.log("\n----- ID - mir: "+mir.label);
-        console.log("decI = "+this.decI.read());
-        console.log("MPC = "+mir.wr);
 
-        if(this.dataHazzard(mir) && this.dhchave) return true; // DATA HAZZARD
-        
+        // DATA HAZZARD
+        if(this.dhOn == 0 && this.dataHazzard(mir)) {
+            return true;
+        }
+
         // latchs A e B recebem o registrador certo
         this.decA.write(mir.read("a"));
         this.decB.write(mir.read("b"));
@@ -238,15 +379,17 @@ rodarCiclo(ciclos) {
         this.latA.write(this.regs.read(this.decA.read()));
         this.latB.write(this.regs.read(this.decB.read()));
 
-        if (this.mir.read("mar") == "1") {
+        if (mir.mar == "1") {
             this.mar.write(this.latB.read());
+            if (mir.label=="addd") {this.mar.write(this.latA.read());}
             console.log("mar recebe: "+this.mar.read());
 
-            if (this.mir.read("rd") == "1") {
+            if (mir.rd == "1") {
                 let data = this.cache.read(this.mar.read());
                 if (data == null) {
                     this.misses++;
-                    this.memoryBusy = 1;
+                    this.memoryBusy = 2;
+                    return true;
                 }
                 else {
                     this.mbr.write(data);
@@ -291,20 +434,20 @@ rodarCiclo(ciclos) {
 
         this.mpc.write(this.mmux.read());
 
-        console.log("msl: "+this.msl.read()+" - goto: "+this.mpc.read());
+        console.log("msl: "+this.msl.read());
 
         
-        this.pipeline.EX_MEM = {mir};
+        this.pipeline.EX_MA = {mir};
         console.log("res: "+this.shifter.read())
     }
 
-    // ​MEM (Memory Access): Acesso à memória de dados (se necessário).
-    estagioMEM() {
-        const buffer = this.pipeline.EX_MEM;
+    // ​MA (Memory Access): Acesso à memória de dados (se necessário).
+    estagioMA() {
+        const buffer = this.pipeline.EX_MA;
         if (!buffer || !buffer.mir) return;
         const mir = buffer.mir;
 
-        console.log("\n----- MEM - mir: "+mir.label);
+        console.log("\n----- MA - mir: "+mir.label);
 
         if (mir.read("mbr") == "1") {
             this.mbr.write(this.shifter.read());
@@ -316,13 +459,13 @@ rodarCiclo(ciclos) {
             }
         }
 
-        this.pipeline.MEM_WB = {mir};
+        this.pipeline.MA_WB = {mir};
         console.log("wr: "+mir.read("wr"))
     }
 
     // ​WB (Write Back): Grava o resultado de volta no banco de registradores
     estagioWB() {
-        const buffer = this.pipeline.MEM_WB;
+        const buffer = this.pipeline.MA_WB;
         if (!buffer || !buffer.mir) return;
         const mir = buffer.mir;
 
@@ -331,10 +474,14 @@ rodarCiclo(ciclos) {
         this.decC.write(mir.read("c"));
 
         if (mir.read("enc") == "1") {
-            this.regs.write(this.decC.read(), this.shifter.read());
+            if (mir.mbr == "0") {
+                this.regs.write(this.decC.read(), this.shifter.read());
+            }
+            else {
+                this.regs.write(this.decC.read(), this.mbr.read());
+            }
+            console.log("reg: "+this.decC.read()+" = "+this.regs.read(this.decC.read()));
         }
-
-        console.log("reg: "+this.decC.read()+" = "+this.regs.read(this.decC.read()));
     }
 
 
@@ -378,8 +525,8 @@ rodarCiclo(ciclos) {
         this.pipeline = {
             IF_ID: {mir: null},
             ID_EX: {mir: null},
-            EX_MEM: {mir: null},
-            MEM_WB: {mir: null}
+            EX_MA: {mir: null},
+            MA_WB: {mir: null}
         };
 
         if (this.onEstadoChange) {

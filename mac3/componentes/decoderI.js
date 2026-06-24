@@ -16,9 +16,12 @@ class DecoderI {
 
     // Decodifica a macroinstrução
     decode() {
-        const opcode = parseInt(this.instrucao.slice(0, 4), 2);
-        if (opcode === 15) {
+        let opcode = parseInt(this.instrucao.slice(0, 4), 2);
+        if (opcode == 15) {
             opcode += parseInt(this.instrucao.slice(4, 8), 2);
+        } 
+        if (opcode == 30) {
+            opcode += parseInt(this.instrucao.slice(8, 12), 2);
         } 
         this.value = opcode.toString(2).padStart(6, '0');        
         // console.log(this.value);
