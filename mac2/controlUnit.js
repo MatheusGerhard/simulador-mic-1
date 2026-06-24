@@ -41,7 +41,7 @@ function andWords(left, right) {
 class ControlUnit {
     constructor(cacheSize = DEFAULT_CACHE_SIZE) {
         this.cacheSize = normalizeCacheSize(cacheSize);
-
+        this.breakpoints = new Set();
         // classes
         this.alu = new ArithmeticLogicUnit();
         this.amux = new Amux();

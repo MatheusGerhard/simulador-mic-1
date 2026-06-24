@@ -31,6 +31,7 @@ function andWords(left, right) {
 
 class ControlUnit {
     constructor() {
+        this.breakpoints = new Set();
         // classes
         this.alu = new ArithmeticLogicUnit();
         this.amux = new Amux();

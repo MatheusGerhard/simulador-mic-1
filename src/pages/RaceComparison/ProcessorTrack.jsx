@@ -36,6 +36,28 @@ function Metric({ label, value }) {
         </div>
     );
 }
+function binaryToSignedDecimal(bits) {
+    const clean = bits.trim();
+
+    if (!/^[01]+$/.test(clean)) return "-";
+
+    const unsigned = parseInt(clean, 2);
+
+    if (clean[0] === "0") {
+        return unsigned;
+    }
+
+    return unsigned - Math.pow(2, clean.length);
+}
+
+function formatDecimalValue(value) {
+    if (!value || value === "-") return "-";
+
+    return value
+        .split("|")
+        .map(part => binaryToSignedDecimal(part.trim()))
+        .join(" | ");
+}
 
 function CacheContent({ hasCache, snapshot = [] }) {
     return (
@@ -53,6 +75,10 @@ function CacheContent({ hasCache, snapshot = [] }) {
                                 <th>V</th>
                                 <th>Endereco</th>
                                 <th>Valor</th>
+                                <th>Decimal (Representação)</th>
+
+                                
+
                             </tr>
                         </thead>
                         <tbody>
@@ -62,6 +88,7 @@ function CacheContent({ hasCache, snapshot = [] }) {
                                     <td>{line.valid ? "1" : "0"}</td>
                                     <td>{formatCacheCell(line.addressRange ?? line.address)}</td>
                                     <td>{formatCacheCell(line.value)}</td>
+                                    <td>{formatDecimalValue(line.value)}</td>
                                 </tr>
                             ))}
                         </tbody>
