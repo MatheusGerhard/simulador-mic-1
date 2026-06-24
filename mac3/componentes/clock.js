@@ -17,12 +17,12 @@ class Clock {
         if (this.halt > 1) {
             this.halt--;
             this.pulsos++;
-            console.log("-------------- " + this.pulsos + " --------------");
+            console.log("==================== " + this.pulsos + " ====================");
             console.log("Espere.");
         }
         else {
-            console.log("-------------- " + this.pulsos + " --------------");
-            let teste = controlUnit.rodarCiclo(this.subciclo, this.pulsos);
+            console.log("==================== " + this.pulsos + " ====================");
+            let teste = controlUnit.rodarCiclo(this.pulsos);
             if (teste == false) {
                 console.log("Cache miss!");
                 this.halt = 1;
